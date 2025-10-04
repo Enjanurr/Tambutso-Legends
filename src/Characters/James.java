@@ -1,23 +1,26 @@
 package Characters;
 
+import java.util.Random;
+
 public class James extends Driver {
+    Random rand = new Random();
 
     public James() {
-        super("James – The Risk-Taker", 100, 80, 20);
+        super("James", 5, 9, 8, 4, "Wild Overtake");
     }
 
-    @Override
-    public void skill1() {
-        System.out.println("Shortcut Dash! (Damage: 25–35, -15 Mana)");
+    public int skill1() {
+        System.out.println(name + " used Nitro Boost!");
+        return rand.nextInt(21) + 5;  // 5–25
     }
 
-    @Override
-    public void skill2() {
-        System.out.println("Pasada Overdrive! (Damage: 20–40, -20 Mana)");
+    public int skill2() {
+        System.out.println(name + " used Wild Overtake!");
+        return rand.nextInt(16) + 15; // 15–30
     }
 
-    @Override
-    public void skill3() {
-        System.out.println("Reckless Swagger! (Damage: 30–45, -25 Mana)");
+    public int skill3() {
+        System.out.println(name + " used Risky Drift!");
+        return rand.nextInt(26) + 10; // 10–35
     }
 }

@@ -1,23 +1,26 @@
 package Characters;
 
+import java.util.Random;
+
 public class Johnru extends Driver {
+    Random rand = new Random();
 
     public Johnru() {
-        super("Johnru – The Patience Master", 150, 50, 20);
+        super("Johnru", 8, 6, 3, 3, "Passenger Whisperer");
     }
 
-    @Override
-    public void skill1() {
-        System.out.println("Kalma Mode! (Damage: 5–15, -5 Mana)");
+    public int skill1() {
+        System.out.println(name + " used Smooth Ride!");
+        return rand.nextInt(6) + 5;  // 5–10
     }
 
-    @Override
-    public void skill2() {
-        System.out.println("Blessing Aura! (Heal: 20–30, -15 Mana)");
+    public int skill2() {
+        System.out.println(name + " used Engine Tune!");
+        return rand.nextInt(11) + 10; // 10–20
     }
 
-    @Override
-    public void skill3() {
-        System.out.println("Silent Drive! (Damage: 20–35, -20 Mana)");
+    public int skill3() {
+        System.out.println(name + " used Passenger Whisperer!");
+        return rand.nextInt(16) + 8;  // 8–23
     }
 }

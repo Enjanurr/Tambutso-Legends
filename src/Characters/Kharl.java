@@ -1,22 +1,26 @@
 package Characters;
-public class Kharl extends Driver{
-    public Kharl(){
-        super("Kharl - The Hustler", 120,60,20);
+
+import java.util.Random;
+
+public class Kharl extends Driver {
+    Random rand = new Random();
+
+    public Kharl() {
+        super("Kharl", 6, 7, 5, 3, "Quick Shift");
     }
 
-
-    @Override
-    public void skill1() {
-        System.out.println("Turbo Maneuver! (Damage: 15–25, -10 Mana)");
+    public int skill1() {
+        System.out.println(name + " used Quick Shift!");
+        return rand.nextInt(11) + 12; // 12–22
     }
 
-    @Override
-    public void skill2() {
-        System.out.println("Diskarte Talk! (Damage: 10–20, -5 Mana)");
+    public int skill2() {
+        System.out.println(name + " used Turbo Slide!");
+        return rand.nextInt(16) + 10; // 10–25
     }
 
-    @Override
-    public void skill3() {
-        System.out.println("Pogi Points! (Damage: 20–30, -15 Mana)");
+    public int skill3() {
+        System.out.println(name + " used Full Throttle!");
+        return rand.nextInt(21) + 15; // 15–35
     }
 }

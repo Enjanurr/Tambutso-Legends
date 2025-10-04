@@ -1,36 +1,60 @@
 package Characters;
 
+import java.util.Random;
+
 public abstract class Driver {
-    protected String name;
-    protected int hp;
-    protected int mana;
-    protected int maxLevel;
+    Random rand = new Random();
+    public String name;
 
-    public Driver(String name, int hp, int mana, int maxLevel) {
+    public int speed;
+    public int fuelEfficiency;  // how slowly fuel decreases
+    public int skillChance;     // chance to use skill successfully
+    public int riskLevel;       // chance of mistakes
+    public String uniqueSkill;
+
+    public int fuel = 100;      // starting fuel
+    public int passengerCount = 0;
+    public int maxPassengers = 20; // jeep capacity
+
+    public Driver(String name, int speed, int fuelEfficiency, int skillChance, int riskLevel, String uniqueSkill) {
         this.name = name;
-        this.hp = hp;
-        this.mana = mana;
-        this.maxLevel = maxLevel;
+        this.speed = speed;
+        this.fuelEfficiency = fuelEfficiency;
+        this.skillChance = skillChance;
+        this.riskLevel = riskLevel;
+        this.uniqueSkill = uniqueSkill;
     }
 
-    public String getName() {
-        return name;
+    // ✅ passenger methods
+    public boolean addPassenger() {
+        if (passengerCount < maxPassengers) {
+            passengerCount += rand.nextInt(2) + 3; // pick 3-4 passengers
+            System.out.println(name + " picked up passengers. Total: " + passengerCount);
+            return true;
+        } else {
+            System.out.println(name + "'s jeep is full!");
+            return false;
+        }
     }
 
-    public int getHp() {
-        return hp;
+    public boolean dropPassenger() {
+        if (passengerCount > 0) {
+            passengerCount -= rand.nextInt(2) + 3; // drop 3-4 passengers
+            passengerCount = Math.max(0, passengerCount);
+            System.out.println(name + " dropped passengers. Total: " + passengerCount);
+            return true;
+        } else {
+            System.out.println("No passengers to drop.");
+            return false;
+        }
     }
 
-    public int getMana() {
-        return mana;
+    public void showPassengers() {
+        System.out.println(name + " has " + passengerCount + " passengers on board.");
     }
 
-    public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    // Each driver will implement their own skills
-    public abstract void skill1();
-    public abstract void skill2();
-    public abstract void skill3();
+    // Abstract skills
+    public abstract int skill1();
+    public abstract int skill2();
+    public abstract int skill3();
 }
