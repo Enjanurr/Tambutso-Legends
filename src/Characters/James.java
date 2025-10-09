@@ -10,17 +10,17 @@ public class James extends Driver {
     }
 
     public int skill1() {
-        System.out.println(name + " used Nitro Boost!");
-        return rand.nextInt(21) + 5;  // 5–25
+        System.out.println(name + " used Crazy Drift!");
+        return rand.nextInt(26) + 5;  // 25-30
     }
 
     public int skill2() {
-        System.out.println(name + " used Wild Overtake!");
-        return rand.nextInt(16) + 15; // 15–30
+        System.out.println(name + " used Wild Overdrive!");
+        return rand.nextInt(46) + 5; // 45-50
     }
 
     public int skill3() {
-        System.out.println(name + " used Risky Drift!");
-        return rand.nextInt(26) + 10; // 10–35
+        System.out.println(name + " used Final Gear!");
+        return rand.nextInt(76) + 5; // 75-80
     }
 }

@@ -10,17 +10,17 @@ public class Kharl extends Driver {
     }
 
     public int skill1() {
-        System.out.println(name + " used Quick Shift!");
-        return rand.nextInt(11) + 12; // 12–22
+        System.out.println(name + " used Turbo Start!");
+        return rand.nextInt(21) + 5; // 20-15
     }
 
     public int skill2() {
-        System.out.println(name + " used Turbo Slide!");
-        return rand.nextInt(16) + 10; // 10–25
+        System.out.println(name + " used Nitro Spin!");
+        return rand.nextInt(41) + 5; // 40-45
     }
 
     public int skill3() {
-        System.out.println(name + " used Full Throttle!");
-        return rand.nextInt(21) + 15; // 15–35
+        System.out.println(name + " used Tambutso Burst!");
+        return rand.nextInt(71) + 5; // 70 - 75
     }
 }

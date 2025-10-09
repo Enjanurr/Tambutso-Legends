@@ -10,17 +10,17 @@ public class Johnru extends Driver {
     }
 
     public int skill1() {
-        System.out.println(name + " used Smooth Ride!");
-        return rand.nextInt(6) + 5;  // 5–10
+        System.out.println(name + " used Smooth Maneuver!");
+        return rand.nextInt(16) + 5;  // 15–20
     }
 
     public int skill2() {
-        System.out.println(name + " used Engine Tune!");
-        return rand.nextInt(11) + 10; // 10–20
+        System.out.println(name + " used Fare Tactician!");
+        return rand.nextInt(36) + 5; // 35-40
     }
 
     public int skill3() {
-        System.out.println(name + " used Passenger Whisperer!");
-        return rand.nextInt(16) + 8;  // 8–23
+        System.out.println(name + " used Perfect Route!");
+        return rand.nextInt(61) + 5;  // 60-65
     }
 }
