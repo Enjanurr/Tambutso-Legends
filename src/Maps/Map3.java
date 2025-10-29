@@ -139,9 +139,10 @@ public class Map3 extends World {
                 System.out.println("\n--- Player Turn ---");
 
                 // === Show dynamic skill cooldowns ===
-                System.out.println("1. Use Skill 1" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
-                System.out.println("2. Use Skill 2" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turn left)" : ""));
-                System.out.println("3. Use Skill 3" + (cooldownSkill3 > 0 ? " (⏳ " + cooldownSkill3 + " turns left)" : ""));
+                // added skill names
+                System.out.println("1. Use Skill 1 (" + driver.getSkill1() + ")" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
+                System.out.println("2. Use Skill 2 (" + driver.getSkill2() + ")" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turn left)" : ""));
+                System.out.println("3. Use Skill 3 (" + driver.getSkill3() + ")" + (cooldownSkill3 > 0 ? " (⏳ " + cooldownSkill3 + " turns left)" : ""));
                 System.out.println("4. Skip turn (recover 5 fuel)");
 
                 int choice = InputHandler.getChoice("Your action: ", 1, 4);
@@ -190,7 +191,6 @@ public class Map3 extends World {
                     case 4 -> {
                         fuel += 5;
                         System.out.println(driver.name + " rests and recovers 5 fuel! (" + fuel + ")");
-
                     }
                 }
 

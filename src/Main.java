@@ -1,18 +1,30 @@
 import Characters.*;
 import Maps.*;
-import Utils.InputHandler;
+import Utils.*;
 import Story.*;
 public class Main {
     public static void main(String[] args) {
         int play = 0;
-        while (play != 1) {
+        while (play != 1)
             play = InputHandler.getInt("Press 1 to start: ");
+
+        // added option to skip story
+        char skip = '0';
+        while (skip != 'Y' && skip != 'N') {
+            skip = Character.toUpperCase(InputHandler.getChar("Skip story? (N/Y): "));
         }
-//        Intro intro = new Intro();
-//        intro.show();
+
+        if (skip == 'N') {
+            Intro intro = new Intro();
+            intro.show();
+        }
+
+        // cleaned up display
+        Display display = new Display();
+        display.printDrivers();
         Driver driver = null;
         while (driver == null) {
-            int choice = InputHandler.getInt("Choose your driver (1=Kharl, 2=Johnru, 3=James): ");
+            int choice = InputHandler.getInt("Enter: ");
             switch (choice) {
                 case 1 -> driver = new Kharl();
                 case 2 -> driver = new Johnru();

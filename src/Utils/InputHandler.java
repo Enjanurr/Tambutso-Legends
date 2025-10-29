@@ -8,7 +8,7 @@ public class InputHandler {
     public static int getInt(String prompt) {
         System.out.print(prompt);
         while (!scanner.hasNextInt()) {
-            System.out.print("❌ Invalid input. " + prompt);
+            System.out.print("❌ Invalid input.\n" + prompt); // added newline
             scanner.next();
         }
         return scanner.nextInt();
@@ -23,5 +23,14 @@ public class InputHandler {
             }
         } while (choice < min || choice > max);
         return choice;
+    }
+    // made for skipping story
+    public static char getChar(String prompt) {
+        System.out.print(prompt);
+        while (!scanner.hasNext()) {
+            System.out.print("❌ Invalid input.\n" + prompt);
+            scanner.next();
+        }
+        return scanner.next().charAt(0);
     }
 }

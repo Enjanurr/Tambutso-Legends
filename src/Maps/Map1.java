@@ -1,6 +1,7 @@
 package Maps;
 
 import Characters.Driver;
+import Utils.Display;
 import Utils.InputHandler;
 import java.util.Random;
 import Boss.*;
@@ -27,7 +28,6 @@ public class Map1 extends World {
             System.out.println("Mission: Earn ₱300 from 10 stops and Defeat Boss Vaughn.\n");
 
             boolean failedRun = false;
-
             for (int stop = 1; stop < stops; stop++) {
                 System.out.println("\n--- Stop " + stop + " ---");
                 System.out.println("Fuel: " + fuel + " | Passengers: " + passengers + " | Money: ₱" + money);
@@ -141,7 +141,8 @@ public class Map1 extends World {
                 System.out.println("\n--- Player Turn ---");
 
                 // === Show available skills dynamically ===
-                System.out.println("1. Use Skill 1" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
+                // added skill name
+                System.out.println("1. Use Skill 1 (" + driver.getSkill1() + ")" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
                 System.out.println("2. Use Skill 2 (🔒 Locked)");
                 System.out.println("3. Use Skill 3 (🔒 Locked)");
                 System.out.println("4. Skip turn (recover 5 fuel)");

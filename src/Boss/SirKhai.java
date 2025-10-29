@@ -6,10 +6,14 @@ public class SirKhai extends Bossing{
     public SirKhai(){
      super("Sir Khai",300);
     }
+
+    @Override
     public int attackSkill(){
         System.out.println(name + " use Precision Drift");
         return rand.nextInt(26) + 10;
     }
+
+    @Override
     public int ultimate(){
         System.out.println(name + " use Full Stop");
         return rand.nextInt(36) + 35;

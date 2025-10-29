@@ -39,4 +39,9 @@ public abstract class Driver {
     public abstract int skill1();
     public abstract int skill2();
     public abstract int skill3();
+
+    // added abstract skill getter methods
+    public abstract String getSkill1();
+    public abstract String getSkill2();
+    public abstract String getSkill3();
 }

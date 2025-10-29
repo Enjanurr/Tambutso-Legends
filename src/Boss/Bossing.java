@@ -13,5 +13,4 @@ public abstract class Bossing {
 
     public abstract int attackSkill();
     public abstract int ultimate();
-
 }

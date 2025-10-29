@@ -139,8 +139,9 @@ public class Map2 extends World{
                 System.out.println("\n--- Player Turn ---");
 
                 // === Show available skills dynamically ===
-                System.out.println("1. Use Skill 1" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
-                System.out.println("2. Use Skill 2" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : ""));
+                // added skill names
+                System.out.println("1. Use Skill 1 (" + driver.getSkill1() + ")" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
+                System.out.println("2. Use Skill 2 (" + driver.getSkill2() + ")" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : ""));
                 System.out.println("3. Use Skill 3 (🔒 Locked)");
                 System.out.println("4. Skip turn (recover 5 fuel)");
 
