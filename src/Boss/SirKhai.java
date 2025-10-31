@@ -4,14 +4,14 @@ import java.util.Random;
 public class SirKhai extends Bossing{
     Random rand = new Random();
     public SirKhai(){
-     super("Sir Khai",300);
+     super("Sir Khai",100);
     }
     public int attackSkill(){
         System.out.println(name + " use Precision Drift");
-        return rand.nextInt(26) + 10;
+        return rand.nextInt(6) + 35;
     }
     public int ultimate(){
-        System.out.println(name + " use Full Stop");
-        return rand.nextInt(36) + 35;
+        System.out.println(name + " Overdrive Authority");
+        return rand.nextInt(6) + 70;
     }
 }

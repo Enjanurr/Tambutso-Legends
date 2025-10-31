@@ -13,13 +13,13 @@ public class BossVaughn extends Bossing {
     @Override
     public int attackSkill() {
         System.out.println(name + " uses Bumper Slam!");
-        return rand.nextInt(6) + 10; // 10–15 raw damage
+        return rand.nextInt(6) + 25;
     }
 
     // Ultimate: Full Stop
     @Override
     public int ultimate() {
         System.out.println(name + " uses Full Stop!");
-        return rand.nextInt(6) + 35; // 35-40 raw damage
+        return rand.nextInt(6) + 40; // 35-40 raw damage
     }
 }

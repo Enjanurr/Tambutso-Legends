@@ -27,23 +27,34 @@ public class Main {
 //        Tutorials tuts = new Tutorials();
 //        tuts.play(driver);
 
+
         Map1 map1 = new Map1();
-        map1.play(driver);
-    /*
-    *    boolean successMap1 = map1.play(driver);
-       boolean succesMap2 =  false;
+        boolean successMap1 = map1.play(driver);
 
         if (successMap1) {
-           System.out.println("\n🚦 Proceeding to Map 2...");
-           Map2 map2 = new Map2();
-            map2.play(driver);
-           succesMap2 = true;
-        } else if(succesMap2){
-            Map3 map3 = new Map3();
-            map3.play(driver);
-       }else {
+            System.out.println("\n🚦 Proceeding to Map 2...");
+            Map2 map2 = new Map2();
+            boolean successMap2 = map2.play(driver);
+
+            if (successMap2) {
+                System.out.println("\n🚦 Proceeding to Map 3...");
+                Map3 map3 = new Map3();
+                boolean successMap3 = map3.play(driver);
+                if (successMap3) {
+                    System.out.println("\n🏁 Proceeding to the Finale...");
+                    Finale finale = new Finale();
+                    finale.play(driver);
+                } else {
+                    System.out.println("\n💀 You didn’t defeat the boss in Map 3. Try again!");
+                }
+            } else {
+                System.out.println("\n💤 You didn’t finish Map 2. Try again next time!");
+            }
+        } else {
             System.out.println("\n💤 You didn’t finish Map 1. Try again next time!");
-        }*/
+        }
+
+
 
     }
 }
