@@ -11,8 +11,8 @@
 //        public int skillChance;     // chance to use skill successfully
 //        public int riskLevel;       // chance of mistakes
        public String uniqueSkill;
-       public int baseFuel = 100;
-
+       public int baseFuel = 0;
+       public int money = 0; //Money in map 3 to pass on Finale map
 
         //public int fuel = 100;      // starting fuel
         public int passengerCount = 0;
@@ -20,9 +20,13 @@
 
         public Driver(String name, String uniqueSkill) {
             this.name = name;
-        this.uniqueSkill = uniqueSkill;
-
+            this.uniqueSkill = uniqueSkill;
         }
+        //Added getter & setter for the Money in map 3 to pass on Finale map
+        public void setMoney(int money){
+            this.money = money;
+        }
+        public int getMoney(){return money;}
 
         public void showPassengers() {
             System.out.println(name + " has " + passengerCount + " passengers on board.");

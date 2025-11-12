@@ -18,6 +18,10 @@ public class InputHandler {
         int choice;
         do {
             choice = getInt(prompt);
+            //Made changes for back to menu
+            if (choice == 0) {// if 0 will go back menu
+                return 0;
+            }
             if (choice < min || choice > max) {
                 System.out.println("❌ Invalid choice. Enter a number between " + min + " and " + max + ".");
             }
