@@ -29,15 +29,15 @@ public class Main {
         //Tutorials tuts = new Tutorials();
         //tuts.play(driver);
 
-        //driver.levelUp(1); Map1 map1 = new Map1(); boolean successMap1 = map1.play(driver);
+        driver.levelUp(1); Map1 map1 = new Map1(); boolean successMap1 = map1.play(driver);
 
-        boolean successMap1 = true; // debug purposes
+        //boolean successMap1 = true; // debug purposes
         if (successMap1) {
             driver.levelUp(2);
-            // Map2 map2 = new Map2(); boolean successMap2 = map2.play(driver);
+             Map2 map2 = new Map2(); boolean successMap2 = map2.play(driver);
 
             System.out.println("\n🚦 Proceeding to Map 2...");
-            boolean successMap2 = true;// debug purposes
+            //boolean successMap2 = true;// debug purposes
 
             if (successMap2) {
                 driver.levelUp(3);

@@ -26,9 +26,9 @@ public class James extends Driver {
         int damage;
 
         switch (mapLevel) {
-            case 1 -> damage = randomInRange(1000, 2000);
-            case 2 -> damage = randomInRange(1000, 2000);
-            case 3 -> damage = randomInRange(1000, 2000);
+            case 1 -> damage = randomInRange(25, 35);
+            case 2 -> damage = randomInRange(35, 45);
+            case 3 -> damage = randomInRange(45, 55);
             default -> {
                 System.out.println(name + " hasn’t unlocked Crazy Drift yet!");
                 return 0;
