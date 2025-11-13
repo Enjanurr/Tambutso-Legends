@@ -558,7 +558,7 @@ public class Map2 extends World {
             }
 
             if (defeatBoss) {
-                if (money >= 600) {
+                if (money >= 1000) {
                     System.out.println("🎉 Mission Success! Map 2 Complete!");
                     System.out.println("Passengers: " + passengers + " | Total ₱" + money);
                     System.out.println("🎉 You successfully protected the passengers! Everyone is safe, thanks to your heroic driving!");

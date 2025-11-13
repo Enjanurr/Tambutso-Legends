@@ -49,7 +49,7 @@ public class James extends Driver {
 
         int damage = switch (mapLevel) {
             case 2 -> randomInRange(60, 75);
-            case 3 -> randomInRange(70, 85);
+            case 3 -> randomInRange(70, 80);
             default -> 0;
         };
 
@@ -64,7 +64,7 @@ public class James extends Driver {
             return 0;
         }
 
-        int damage = randomInRange(90, 110);
+        int damage = randomInRange(85, 95);
         //int damage = randomInRange(1000, 2000);
         System.out.println(name + " used Final Gear! 🏁 (" + damage + " dmg)");
         return damage;

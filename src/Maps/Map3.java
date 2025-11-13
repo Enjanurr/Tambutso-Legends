@@ -581,11 +581,11 @@ public class Map3 extends World {
                     money += 300;
                     System.out.println("💎 Reward: ₱300 | Total Money: ₱" + money);
 
-                    //driver.levelUp(3); // level up final form
+
                     System.out.println("🏁 Final form achieved!");
                     System.out.println("SirKhai has evolved into JolliKhai");
 
-                    if (money >= 500) {
+                    if (money >= 1900) {
                         System.out.println("🎉 Mission Success! Map 3 Complete!");
                         System.out.println("Passengers: " + passengers + " | Total ₱" + money);
                         System.out.println("🎉 You successfully protected the passengers! Everyone is safe, thanks to your heroic driving!");

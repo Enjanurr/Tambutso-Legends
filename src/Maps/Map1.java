@@ -80,7 +80,7 @@ public class Map1 extends World {
                 int chance = rand.nextInt(100) + 1; // 1–100
                 String passengerType = "";
                 int fare = 0;
-                //int baseFare = 5 + (5 * stop); // ₱20 base + ₱5 per stop
+
 
 
                 if (chance <= 10) {
@@ -110,22 +110,6 @@ public class Map1 extends World {
                     fare = rand.nextInt(51) + 100; // ₱100–₱140
                 }
 
-                //old reward system
-                /*
-                if (chance <= 50) { // 40% Students
-                    passengerType = "Students";
-                    fare = rand.nextInt(41) + 40;//₱40–₱80
-                } else if (chance <= 85) { // 35% Seniors
-                    passengerType = "Seniors";
-                    fare = rand.nextInt(41) + 60;// ₱60–₱100
-                }else{
-                    passengerType = "Office Workers";
-                    fare = rand.nextInt(51) + 100; //₱100–₱150
-                }
-                */
-
-                // Add base fare
-                //fare += baseFare;
 
                 int fuelLoss = rand.nextInt(3) + 8;
                 driver.baseFuel -= fuelLoss;
