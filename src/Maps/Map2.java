@@ -46,8 +46,9 @@ public class Map2 extends World {
 
             boolean failedRun = false;
             for (int stop = 1; stop <= stops; stop++) {
-                System.out.println("\n--- Stop " + stop + " ---");
-                System.out.println("Destination: "+ destination[stop - 1]);
+                System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                System.out.println("\n=== Map 2: Minglanilla → CIT-U ===");
+                System.out.println("\nStop "+ stop+" | Destination: "+ destination[stop - 1] );
                 System.out.println("Fuel: " + driver.baseFuel + " | Passengers: " + passengers + " | Money: ₱" + money);
                 System.out.println("1. Pick up passengers");
                 System.out.println("2. Skip stop (save fuel)");
@@ -168,19 +169,19 @@ public class Map2 extends World {
                     switch (randomGaba) {
                         case 1 -> {
                             System.out.println("🚗 Flat Tire! -6 Fuel, pay ₱25 to fix.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
+                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                             if (choice == 1) money -= 25;
                             else driver.baseFuel -= 6;
                         }
                         case 2 -> {
                             System.out.println("🔥 Engine Overheated! -12 Fuel, pay ₱20 to cool.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
+                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                             if (choice == 1) money -= 20;
                             else driver.baseFuel -= 12;
                         }
                         case 3 -> {
                             System.out.println("🚨 LTO Stop! Pay ₱30 fine or lose 4 fuel and 1 passenger.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
+                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                             if (choice == 1) money -= 30;
                             else {
                                 driver.baseFuel -= 4;
@@ -189,14 +190,14 @@ public class Map2 extends World {
                         }
                         case 4 -> {
                             System.out.println("⛽ Fuel Leak! -5 Fuel, pay ₱22 to repair.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
+                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                             if (choice == 1) money -= 22;
                             else driver.baseFuel -= 5;
                         }
                         case 5 -> {
                             int stolen = 1;
                             System.out.println("🚐 Jeepney Thief! Lost " + stolen + " passenger. Pay ₱28 bribe to recover.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
+                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                             if (choice == 1) money -= 28;
                             else {
                                 passengers = Math.max(0, passengers - stolen);
@@ -232,6 +233,7 @@ public class Map2 extends World {
             }
 
             // ====================== SHOP ======================
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             System.out.println("\n🎁 SHOP TIME!");
             boolean buying = true;
             while (buying) {
@@ -367,14 +369,17 @@ public class Map2 extends World {
             boolean rePhilUsed = false;
             boolean burningTireUsed = false;
             boolean bumperShieldUsed = false;
+            int rounds = 1;
 
             while (!defeatBoss && driver.baseFuel > 0 && boss.fuel > 0) {
+                System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                System.out.println("\n     ⚔️  ROUND " + rounds + "  ⚔️");
                 System.out.println("\n--- Player Turn ---");
                 System.out.println("Fuel: " + driver.baseFuel + " | Boss Fuel: " + boss.fuel);
                 System.out.println("1. Use Skill 1" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
                 System.out.println("2. Use Skill 2" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : ""));
                 System.out.println("3. Use Item");
-                System.out.println("4. Skip Turn (+5 Fuel)");
+                System.out.println("4. Skip Turn ( +(5-10) Fuel)");
                 System.out.println("----------------------");
                 System.out.println("0. Exit Fight(Restart Current Map)");
                 int choice = InputHandler.getChoice("Your choice: ", 0, 4);
@@ -482,8 +487,13 @@ public class Map2 extends World {
                         validTurn = false;
                     }
                     case 4 -> {
-                        driver.baseFuel += 5;
-                        System.out.println(driver.name + " rests and recovers +5 fuel (" + driver.baseFuel + ")");
+                        int fuelGain = rand.nextInt(6) + 5; // generates 5–10
+                        driver.baseFuel += fuelGain;
+
+                        System.out.println(driver.name + " takes a breather and recovers +"
+                                + fuelGain + " fuel (" + driver.baseFuel + ")");
+
+                        validTurn = true;
                     }
                 }
 
@@ -504,7 +514,7 @@ public class Map2 extends World {
                     if(validTurn && boss.fuel > 0){
                         System.out.println("\n--- Boss Turn ---");
                         int bossDamage = 0;
-
+                        rounds++;
                         if (bossUltimateCD == 0 && rand.nextInt(2) == 0) {
                             bossDamage = boss.ultimate();
                             bossUltimateCD = 5;

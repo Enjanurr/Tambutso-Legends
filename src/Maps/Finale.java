@@ -31,7 +31,7 @@ public class Finale extends World {
             System.out.println("\n🚏 Finalleee");
             System.out.println("Defeat JolliKhai\n");
 
-
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             System.out.println("\n🎁 SHOP TIME!");
             boolean buying = true;
             while (buying) {
@@ -168,15 +168,17 @@ public class Finale extends World {
             boolean rePhilUsed = false;
             boolean burningTireUsed = false;
             boolean bumperShieldUsed = false;
-
+            int rounds = 1;
             while (!defeatBoss) {
+                System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                System.out.println("\n     ⚔️  ROUND " + rounds + "  ⚔️");
                 System.out.println("\n--- Player Turn ---");
                 System.out.println("Fuel: " + driver.baseFuel + " | Boss Fuel: " + boss.fuel);
                 System.out.println("1. Use Skill 1" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
                 System.out.println("2. Use Skill 2" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : ""));
                 System.out.println("3. Use Skill 3" + (cooldownSkill3 > 0 ? " (⏳ " + cooldownSkill3 + " turns left)" : ""));
                 System.out.println("4. Use Item");
-                System.out.println("5. Skip Turn (+5 Fuel)");
+                System.out.println("5. Skip Turn ( +(5-10) Fuel)");
                 System.out.println("----------------------");
                 System.out.println("6. Exit Fight(Restart Current Map)");
                 int choice = InputHandler.getChoice("Your choice: ", 1, 6);
@@ -288,9 +290,13 @@ public class Finale extends World {
                         validTurn = false;
                     }
                     case 5 -> {
-                        driver.baseFuel += 5;
-                        System.out.println(driver.name + " rests and recovers +5 fuel (" + driver.baseFuel + ")");
-                        validTurn = false;
+                        int fuelGain = rand.nextInt(6) + 5; // generates 5–10
+                        driver.baseFuel += fuelGain;
+
+                        System.out.println(driver.name + " takes a breather and recovers +"
+                                + fuelGain + " fuel (" + driver.baseFuel + ")");
+
+                        validTurn = true;
                     }
                     case 6 ->{
                         if (retryPrompt(driver, boss)) {
