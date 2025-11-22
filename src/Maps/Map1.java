@@ -205,6 +205,7 @@ public class Map1 extends World {
                     System.out.println("\n⚠ Cannot pick up passengers.");
                     System.out.println("🚌 Your jeepney is FULL (13 / 13).");
                     System.out.println("➡ Drop some passengers first!");
+                    stop -=1;
                     continue; // No fuel loss
                 }
 
