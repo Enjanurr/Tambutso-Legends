@@ -1,4 +1,4 @@
-MAP 2
+
 package Maps;
 
 import Boss.BossAdrian;
