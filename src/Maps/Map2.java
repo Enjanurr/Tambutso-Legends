@@ -1,6 +1,7 @@
-
+MAP 2
 package Maps;
-import Boss.BossVaughn;
+
+import Boss.BossAdrian;
 import Boss.Bossing;
 import Characters.Driver;
 import Utils.InputHandler;
@@ -14,13 +15,13 @@ import java.util.Random;
 import java.util.Scanner;
 import main.Main;
 
-public class Map1 extends World {
+public class Map2 extends World {
     List<Passenger> passengerList = new ArrayList();
     int passengerIdCounter = 1;
     int stop = 0;
     private Random rand = new Random();
     private boolean bossPassive = false;
-    Bossing boss = new BossVaughn();
+    Bossing boss = new BossAdrian();
 
     public void showPassengerList(int currentStop) {
         while(!this.passengerList.isEmpty()) {
@@ -41,7 +42,7 @@ public class Map1 extends World {
             System.out.println("Press 1 to DROP passenger(s)");
             System.out.println("Press 0 to GO BACK");
             Scanner scanner = new Scanner(System.in);
-            System.out.print("Your choice: ");
+            System.out.println("Your choice: ");
             String input = scanner.nextLine().trim();
             if (!input.matches("[01]")) {
                 System.out.println("❌ Invalid input! Please enter only 0 or 1.");
@@ -111,28 +112,27 @@ public class Map1 extends World {
         System.out.println("\nNo passengers onboard.");
     }
 
-    public Map1() {
-        super(30, 10);
+    public Map2() {
+        super(50, 15);
     }
 
     public boolean play(Driver driver) {
         boolean missionComplete = false;
-        String[] destination = new String[]{"Naga City Jeepney Terminal", "KEPCO", "Inoburan Stop ", "Tinaan Crossing", "Langtad Stop", "Cantao-an Junction", "Tunghaan Stop (Boundary Area)", "Calajo-an Stop", "Tulic Stop", "Minglanilla Public Market / Town Proper"};
+        String[] destination = new String[]{"Minglanilla Public Market", "Tulay Minglanilla", "Calajo-an", "Tungkop", "Lawaan", "Tabunok Public Market", "San Isidro (Pardo)", "Bulacao", "Inayawan", "Basak San Nicolas", "Kinasang-an", "Mambaling", "Punta Princesa", "E-mall (Elizabeth Mall)", "CIT-University"};
         int actionUsed = 0;
 
         while(!missionComplete) {
-            driver.baseFuel = 150;
+            driver.baseFuel = 250;
             this.passengers = 0;
             this.money = 0;
+            System.out.println("\n\ud83d\ude8f Starting Map 2: Minglanilla → CIT-U (" + this.stops + " stops)");
+            System.out.println("Mission: Earn ₱600 from 15 stops and Defeat Boss Adrian.\n");
             boolean failedRun = false;
-            System.out.println("\n\ud83d\ude8f Starting Map 1: Naga to Minglanilla (" + this.stops + " stops)");
-            System.out.println("Mission: Earn ₱300 from 10 stops and Defeat Boss Vaughn.\n");
 
-            for(this.stop = 1; this.stop <= this.stops; ++this.stop) {
+            for(int stop = 1; stop < this.stops; ++stop) {
                 System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                System.out.println("\n=== Map 1: Naga to Minglanilla ===");
-                System.out.println("\nStop " + this.stop + " | Destination: " + destination[this.stop - 1]);
-                System.out.println("------------------------");
+                System.out.println("\n=== Map 2: Minglanilla → CIT-U ===");
+                System.out.println("\nStop " + stop + " | Destination: " + destination[stop - 1]);
                 System.out.println("Fuel: " + driver.baseFuel + " | Passengers: " + this.passengers + " | Money: ₱" + this.money);
                 System.out.println("1. Pick up passengers");
                 System.out.println("2. Skip stop (save fuel)");
@@ -148,14 +148,14 @@ public class Map1 extends World {
                         return false;
                     }
 
-                    --this.stop;
+                    --stop;
                 } else {
                     if (action == 1) {
                         if (this.passengerList.size() >= 13) {
                             System.out.println("\n⚠ Cannot pick up passengers.");
                             System.out.println("\ud83d\ude8c Your jeepney is FULL (13 / 13).");
                             System.out.println("➡ Drop some passengers first!");
-                            --this.stop;
+                            --stop;
                             continue;
                         }
 
@@ -203,8 +203,14 @@ public class Map1 extends World {
                                 fare = 100 + rand.nextInt(41);
                             }
 
-                            int dropStop = this.stop + 1 + rand.nextInt(Math.max(1, this.stops - this.stop));
-                            if (dropStop == this.stop) {
+                            int dropStop;
+                            if (stop >= this.stops) {
+                                dropStop = stop;
+                            } else {
+                                dropStop = stop + 1 + rand.nextInt(this.stops - stop);
+                            }
+
+                            if (dropStop == stop) {
                                 System.out.println("❌ Cannot add passenger " + this.passengerIdCounter + ". Their drop stop (" + dropStop + ") is the current stop.");
                                 System.out.println("➡ Skipping this passenger.\n");
                             } else {
@@ -223,9 +229,15 @@ public class Map1 extends World {
                         System.out.println("You skipped this stop (Fuel -" + fuelLoss + ").");
                         actionUsed = 2;
                     } else if (action == 3) {
-                        this.showPassengerList(this.stop);
+                        this.showPassengerList(stop);
                         actionUsed = 3;
                         continue;
+                    }
+
+                    if (driver.baseFuel <= 0) {
+                        System.out.println("❌ You ran out of fuel!");
+                        failedRun = true;
+                        break;
                     }
 
                     if (this.rand.nextInt(100) < this.gaba) {
@@ -241,51 +253,51 @@ public class Map1 extends World {
                         System.out.println(" → Event: " + randomGaba + "\n");
                         switch (randomGaba) {
                             case 1:
-                                System.out.println("\ud83d\ude97 Flat Tire! -5 Fuel, pay ₱15 to fix.");
+                                System.out.println("\ud83d\ude97 Flat Tire! -6 Fuel, pay ₱25 to fix.");
                                 int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                                 if (choice == 1) {
-                                    this.money -= 15;
+                                    this.money -= 25;
                                 } else {
-                                    driver.baseFuel -= 5;
+                                    driver.baseFuel -= 6;
                                 }
                                 break;
                             case 2:
-                                System.out.println("\ud83d\udd25 Engine Overheated! -10 Fuel, pay ₱10 to cool.");
-                                int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
-                                if (choice == 1) {
-                                    this.money -= 10;
-                                } else {
-                                    driver.baseFuel -= 10;
-                                }
-                                break;
-                            case 3:
-                                System.out.println("\ud83d\udea8 LTO Stop! Pay ₱20 fine or lose 3 fuel and 1 passenger.");
+                                System.out.println("\ud83d\udd25 Engine Overheated! -12 Fuel, pay ₱20 to cool.");
                                 int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                                 if (choice == 1) {
                                     this.money -= 20;
                                 } else {
-                                    driver.baseFuel -= 3;
+                                    driver.baseFuel -= 12;
+                                }
+                                break;
+                            case 3:
+                                System.out.println("\ud83d\udea8 LTO Stop! Pay ₱30 fine or lose 4 fuel and 1 passenger.");
+                                int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
+                                if (choice == 1) {
+                                    this.money -= 30;
+                                } else {
+                                    driver.baseFuel -= 4;
                                     this.passengers = Math.max(0, this.passengers - 1);
                                 }
                                 break;
                             case 4:
-                                System.out.println("⛽ Fuel Leak! -4 Fuel, pay ₱12 to repair.");
+                                System.out.println("⛽ Fuel Leak! -5 Fuel, pay ₱22 to repair.");
                                 int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                                 if (choice == 1) {
-                                    this.money -= 12;
+                                    this.money -= 22;
                                 } else {
-                                    driver.baseFuel -= 4;
+                                    driver.baseFuel -= 5;
                                 }
                                 break;
                             case 5:
                                 int stolen = 1;
-                                System.out.println("\ud83d\ude90 Jeepney Thief! Lost " + stolen + " passenger. Pay ₱18 bribe to recover.");
+                                System.out.println("\ud83d\ude90 Jeepney Thief! Lost " + stolen + " passenger. Pay ₱28 bribe to recover.");
                                 int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
                                 if (choice == 1) {
-                                    this.money -= 18;
+                                    this.money -= 28;
                                 } else {
                                     this.passengers = Math.max(0, this.passengers - stolen);
-                                    driver.baseFuel -= this.rand.nextInt(2) + 1;
+                                    driver.baseFuel -= this.rand.nextInt(2) + 2;
                                 }
                         }
 
@@ -306,7 +318,7 @@ public class Map1 extends World {
                 }
                 break;
             } else {
-                if (this.money < 300) {
+                if (this.money < 600) {
                     System.out.println("\ud83d\udcb8 You don’t have enough money to complete this mission.");
                     System.out.println("\ud83d\udd01 We recommend restarting the map to try again.");
 
@@ -340,16 +352,16 @@ public class Map1 extends World {
                             continue;
                         case 1:
                             System.out.println("\n\ud83d\uded2 WHAT DO YOU WANT TO BUY?");
-                            System.out.println("1. RePhil (+30 Fuel) - ₱30");
-                            System.out.println("2. Burning Tire (+20 dmg) - ₱30");
-                            System.out.println("3. Bumper Shield (Block 20 dmg) - ₱30");
+                            System.out.println("1. RePhil (+40 Fuel) - ₱45");
+                            System.out.println("2. Burning Tire (+30 dmg) - ₱45");
+                            System.out.println("3. Bumper Shield (Block 30 dmg) - ₱45");
                             System.out.println("4. Back");
                             int itemChoice = InputHandler.getChoice("Choose: ", 1, 4);
                             if (itemChoice == 4) {
                                 continue;
                             }
 
-                            if (this.money < 30) {
+                            if (this.money < 45) {
                                 System.out.println("\n\ud83d\udcb8 You don't have enough money to buy another item.");
                                 continue;
                             }
@@ -362,22 +374,22 @@ public class Map1 extends World {
                                 default -> var10000 = "";
                             }
 
-                            byte var72;
+                            byte var73;
                             switch (var10000) {
-                                case "RePhil" -> var72 = 3;
-                                case "Burning Tire" -> var72 = 5;
-                                case "Bumper Shield" -> var72 = 3;
-                                default -> var72 = 5;
+                                case "RePhil" -> var73 = 3;
+                                case "Burning Tire" -> var73 = 5;
+                                case "Bumper Shield" -> var73 = 3;
+                                default -> var73 = 5;
                             }
 
-                            int itemLimit = var72;
+                            int itemLimit = var73;
                             int currentQty = (Integer)driver.inventory.getOrDefault(selectedItem, 0);
                             if (currentQty >= itemLimit) {
                                 System.out.println("\n⚠️ You already have the maximum amount of " + selectedItem + " (" + itemLimit + "x)!");
                                 continue;
                             }
 
-                            this.money -= 30;
+                            this.money -= 45;
                             driver.buyItem(selectedItem);
                             System.out.println("\n✅ You bought 1x " + selectedItem + "! (" + String.valueOf(driver.inventory.get(selectedItem)) + "x total)");
                             break;
@@ -404,7 +416,7 @@ public class Map1 extends World {
 
                             String itemToSell = (String)items.get(sellChoice - 1);
                             int quantity = (Integer)driver.inventory.get(itemToSell);
-                            int resellPrice = 30;
+                            int resellPrice = 45;
                             driver.inventory.put(itemToSell, quantity - 1);
                             if ((Integer)driver.inventory.get(itemToSell) <= 0) {
                                 driver.inventory.remove(itemToSell);
@@ -424,37 +436,39 @@ public class Map1 extends World {
                         System.out.println("❌ Your inventory is empty!");
                     } else {
                         for(Map.Entry<String, Integer> entry : driver.inventory.entrySet()) {
-                            PrintStream var73 = System.out;
+                            PrintStream var74 = System.out;
                             String var10001 = (String)entry.getKey();
-                            var73.println("• " + var10001 + " (x" + String.valueOf(entry.getValue()) + ")");
+                            var74.println("• " + var10001 + " (x" + String.valueOf(entry.getValue()) + ")");
                         }
                     }
                 }
 
-                Bossing boss = new BossVaughn();
                 System.out.println("\n========== ⚔️ BOSS FIGHT START ==========");
-                System.out.println("\ud83d\ude8d " + boss.name + " (Boss Fuel: " + boss.fuel + ")");
+                System.out.println("\ud83d\ude8d " + this.boss.name + " (Boss Fuel: " + this.boss.fuel + ")");
                 System.out.println("\ud83e\uddd1\u200d✈️ Driver: " + driver.name + " (Fuel: " + driver.baseFuel + ")");
                 System.out.println("------------------------------------------");
-                System.out.println("\ud83d\udca1 1 Skill1 unlocked for this map!");
+                System.out.println("\ud83d\udca1 Skill 1 & 2 are unlocked in this map!");
                 boolean defeatBoss = false;
                 int shieldActive = 0;
                 int cooldownSkill1 = 0;
+                int cooldownSkill2 = 0;
                 int bossUltimateCD = 0;
                 boolean rePhilUsed = false;
                 boolean burningTireUsed = false;
                 boolean bumperShieldUsed = false;
                 int rounds = 1;
 
-                while(!defeatBoss) {
+                while(!defeatBoss && driver.baseFuel > 0 && this.boss.fuel > 0) {
                     System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                     System.out.println("\n     ⚔️  ROUND " + rounds + "  ⚔️");
                     System.out.println("\n--- Player Turn ---");
-                    System.out.println("Fuel: " + driver.baseFuel + " | Boss Fuel: " + boss.fuel);
-                    String var74 = cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : "";
-                    System.out.println("1. Use Skill 1" + var74);
-                    System.out.println("2. Use Item");
-                    System.out.println("3. Skip Turn ( +(5-10) Fuel)");
+                    System.out.println("Fuel: " + driver.baseFuel + " | Boss Fuel: " + this.boss.fuel);
+                    String var77 = cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : "";
+                    System.out.println("1. Use Skill 1" + var77);
+                    var77 = cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : "";
+                    System.out.println("2. Use Skill 2" + var77);
+                    System.out.println("3. Use Item");
+                    System.out.println("4. Skip Turn ( +(5-10) Fuel)");
                     System.out.println("----------------------");
                     System.out.println("0. Exit Fight(Restart Current Map)");
                     int choice = InputHandler.getChoice("Your choice: ", 0, 4);
@@ -462,7 +476,7 @@ public class Map1 extends World {
                     boolean validTurn = true;
                     switch (choice) {
                         case 0:
-                            if (this.retryPrompt(driver, boss)) {
+                            if (this.retryPrompt(driver, this.boss)) {
                                 return this.play(driver);
                             }
                             break;
@@ -476,6 +490,15 @@ public class Map1 extends World {
                             }
                             break;
                         case 2:
+                            if (cooldownSkill2 > 0) {
+                                System.out.println("⚠️ Skill 2 is cooling down! Wait " + cooldownSkill2 + " more turn(s).");
+                                validTurn = false;
+                            } else {
+                                damage = driver.skill2();
+                                cooldownSkill2 = 2;
+                            }
+                            break;
+                        case 3:
                             if (driver.inventory.isEmpty()) {
                                 System.out.println("\n❌ You have no items to use!");
                                 validTurn = false;
@@ -503,30 +526,31 @@ public class Map1 extends World {
                                             if (rePhilUsed) {
                                                 System.out.println("❌ You already used RePhil once! You can’t use it again.");
                                             } else {
-                                                driver.baseFuel += 30;
+                                                driver.baseFuel += 40;
                                                 driver.decreaseItem("RePhil");
                                                 rePhilUsed = true;
-                                                System.out.println("⛽ RePhil used! +30 Fuel (" + driver.baseFuel + ")");
+                                                System.out.println("⛽ RePhil used! +40 Fuel (" + driver.baseFuel + ")");
                                             }
                                             break;
                                         case "Burning Tire":
                                             if (burningTireUsed) {
                                                 System.out.println("❌ You already used Burning Tire once! You can’t use it again.");
                                             } else {
-                                                boss.fuel -= 20;
+                                                Bossing var75 = this.boss;
+                                                var75.fuel -= 30;
                                                 driver.decreaseItem("Burning Tire");
                                                 burningTireUsed = true;
-                                                System.out.printf("\ud83d\udd25 Burning Tire used! -20 Boss fuel (Remaining: %d)%n", boss.fuel);
+                                                System.out.printf("\ud83d\udd25 Burning Tire used! -30 Boss fuel (Remaining: %d)%n", this.boss.fuel);
                                             }
                                             break;
                                         case "Bumper Shield":
                                             if (bumperShieldUsed) {
                                                 System.out.println("❌ You already used Bumper Shield once! You can’t use it again.");
                                             } else {
-                                                shieldActive = 20;
+                                                shieldActive = 30;
                                                 driver.decreaseItem("Bumper Shield");
                                                 bumperShieldUsed = true;
-                                                System.out.println("\ud83d\udee1️ Shield activated! Blocks next 20 damage");
+                                                System.out.println("\ud83d\udee1️ Shield activated! Blocks next 30 damage");
                                             }
                                             break;
                                         default:
@@ -537,7 +561,7 @@ public class Map1 extends World {
                                 }
                             }
                             break;
-                        case 3:
+                        case 4:
                             int fuelGain = this.rand.nextInt(6) + 5;
                             driver.baseFuel += fuelGain;
                             System.out.println(driver.name + " takes a breather and recovers +" + fuelGain + " fuel (" + driver.baseFuel + ")");
@@ -548,24 +572,27 @@ public class Map1 extends World {
                         rePhilUsed = false;
                         burningTireUsed = false;
                         bumperShieldUsed = false;
-                        boss.fuel -= damage;
-                        if (boss.fuel < 0) {
-                            boss.fuel = 0;
+                        Bossing var76 = this.boss;
+                        var76.fuel -= damage;
+                        if (this.boss.fuel < 0) {
+                            this.boss.fuel = 0;
                         }
 
-                        System.out.println("\ud83d\udca5 You dealt " + damage + " damage! Boss fuel left: " + boss.fuel);
+                        System.out.println("\ud83d\udca5 You dealt " + damage + " damage! Boss fuel left: " + this.boss.fuel);
                     }
 
                     if (!this.bossPassive) {
-                        if (validTurn && boss.fuel > 0) {
+                        if (validTurn && this.boss.fuel > 0) {
                             System.out.println("\n--- Boss Turn ---");
                             int bossDamage = 0;
                             ++rounds;
                             if (bossUltimateCD == 0 && this.rand.nextInt(2) == 0) {
-                                bossDamage = boss.ultimate();
+                                bossDamage = this.boss.ultimate();
                                 bossUltimateCD = 5;
+                                System.out.println("\ud83d\udca5 Boss unleashed its Ultimate Skill!");
                             } else {
-                                bossDamage = boss.attackSkill();
+                                bossDamage = this.boss.attackSkill();
+                                System.out.println("\ud83d\udc4a Boss used Basic Attack!");
                             }
 
                             if (shieldActive > 0) {
@@ -587,16 +614,22 @@ public class Map1 extends World {
                             --bossUltimateCD;
                         }
 
-                        if (validTurn && cooldownSkill1 > 0) {
-                            --cooldownSkill1;
+                        if (validTurn) {
+                            if (cooldownSkill1 > 0) {
+                                --cooldownSkill1;
+                            }
+
+                            if (cooldownSkill2 > 0) {
+                                --cooldownSkill2;
+                            }
                         }
                     } else {
                         System.out.println("\ud83d\ude10 The boss stands still and doesn’t attack...");
                     }
 
                     if (driver.baseFuel <= 0) {
-                        System.out.println("\n\ud83d\udc80 Defeated by " + boss.name + "! You failed to protect the passengers...");
-                        if (this.retryPrompt(driver, boss)) {
+                        System.out.println("\n\ud83d\udc80 Defeated by " + this.boss.name + "! You failed to protect the passengers...");
+                        if (this.retryPrompt(driver, this.boss)) {
                             return this.play(driver);
                         }
 
@@ -604,20 +637,26 @@ public class Map1 extends World {
                         return false;
                     }
 
-                    if (boss.fuel <= 0) {
+                    if (this.boss.fuel <= 0) {
                         System.out.println("\n✅ Boss defeated!");
-                        driver.levelUp(2);
+                        driver.levelUp(3);
                         defeatBoss = true;
-                        if (this.money >= 300) {
-                            System.out.println("\ud83c\udf89 Mission Complete!");
-                            System.out.println("Passengers: " + this.passengers + " | Total ₱" + this.money);
-                            System.out.println("\ud83c\udf89 You successfully protected the passengers! Everyone is safe, thanks to your heroic driving!");
-                            System.out.println("\ud83c\udf89 You unlocked 2nd skill");
-                            missionComplete = true;
-                            return true;
-                        }
+                    }
+                }
 
-                        System.out.println("⚠️ Mission Incomplete!");
+                if (defeatBoss) {
+                    if (this.money >= 1000) {
+                        System.out.println("\ud83c\udf89 Mission Success! Map 2 Complete!");
+                        System.out.println("Passengers: " + this.passengers + " | Total ₱" + this.money);
+                        System.out.println("\ud83c\udf89 You successfully protected the passengers! Everyone is safe, thanks to your heroic driving!");
+                        System.out.println("\ud83c\udf89 You unlocked 3rd skill");
+                        missionComplete = true;
+                        return true;
+                    }
+
+                    System.out.println("⚠️ Mission incomplete! You need at least ₱600. Try again.");
+                    if (!this.retryPrompt(driver, this.boss)) {
+                        break;
                     }
                 }
             }
@@ -652,19 +691,19 @@ public class Map1 extends World {
             } else {
                 switch (chosenItem) {
                     case "RePhil":
-                        fuel += 30;
+                        fuel += 40;
                         driver.decreaseItem("RePhil");
-                        System.out.println("⛽ RePhil used! +30 fuel (" + fuel + ")");
+                        System.out.println("⛽ RePhil used! 40 fuel (" + fuel + ")");
                         break;
                     case "Burning Tire":
-                        boss.fuel -= 20;
+                        boss.fuel -= 30;
                         driver.decreaseItem("Burning Tire");
-                        System.out.println("\ud83d\udd25 Burning Tire used! -20 Boss fuel");
+                        System.out.println("\ud83d\udd25 Burning Tire used! -30 Boss fuel");
                         break;
                     case "Bumper Shield":
-                        shieldActive = 20;
+                        shieldActive = 30;
                         driver.decreaseItem("Bumper Shield");
-                        System.out.println("\ud83d\udee1️ Shield activated! Blocks 20 next damage");
+                        System.out.println("\ud83d\udee1️ Shield activated! Blocks 30 next damage");
                 }
 
                 return true;
@@ -673,11 +712,11 @@ public class Map1 extends World {
     }
 
     private boolean retryPrompt(Driver driver, Bossing boss) {
-        int choice = InputHandler.getChoice("\n\ud83d\udd01 Try again Map 1? (1 = Yes, 2 = No): ", 1, 2);
+        int choice = InputHandler.getChoice("\n\ud83d\udd01 Try again Map 2? (1 = Yes, 2 = No): ", 1, 2);
         boolean retry = choice == 1;
         if (retry) {
             this.resetMap(driver, boss);
-            System.out.println("\n\ud83d\udd01 Restarting Map 1 from Stop 1...");
+            System.out.println("\n\ud83d\udd01 Restarting Map 2 from Stop 1...");
         } else {
             this.bossPassive = true;
             System.out.println("\n\ud83d\udd4a️ You chose not to retry — the fight continues");
@@ -688,9 +727,9 @@ public class Map1 extends World {
 
     private void resetMap(Driver driver, Bossing boss) {
         this.bossPassive = false;
-        driver.baseFuel = 150;
+        driver.baseFuel = 250;
         driver.inventory.clear();
-        boss.fuel = 250;
+        boss.fuel = 350;
         this.passengers = 0;
         this.money = 0;
         this.passengerList = new ArrayList();
