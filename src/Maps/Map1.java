@@ -1,365 +1,224 @@
 package Maps;
 
+
+import Boss.*;
 import Characters.Driver;
 import Utils.InputHandler;
 import java.util.*;
-import Boss.*;
 import main.Main;
 
 
-
 public class Map1 extends World {
-    List<Passenger> passengerList = new ArrayList<>();
-    int passengerIdCounter = 1;
+
     int stop = 0;
-
-    static class Passenger {
-        int id;
-        String type;
-        int dropStop;
-        int fare;
-
-        Passenger(int id, String type, int dropStop, int fare){
-            this.id = id;
-            this.type = type;
-            this.dropStop = dropStop;
-            this.fare = fare;
-        }
-    }
-
-
-
-    public void showPassengerList(int currentStop) {
-
-        while (true) {
-
-            if (passengerList.isEmpty()) {
-                System.out.println("\nNo passengers onboard.");
-                return;
-            }
-
-            passengerList.sort(Comparator.comparingInt(p -> p.dropStop));
-
-            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println("     PASSENGER LIST (STOP " + currentStop + ")   ");
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println("ID | Type        | Stop | Fare");
-            System.out.println("--------------------------------");
-
-            for (Passenger p : passengerList) {
-                System.out.printf("%-3d %-12s %-6d ₱%d\n", p.id, p.type, p.dropStop, p.fare);
-            }
-
-            System.out.println("--------------------------------");
-            System.out.println("Passengers onboard: " + passengerList.size());
-            System.out.println("--------------------------------");
-            System.out.println("Press 1 to DROP passenger");
-            System.out.println("Press 0 to GO BACK");
-
-            int choice = InputHandler.getChoice("Your choice: ", 0, 1);
-
-            if (choice == 0){
-                stop -= 1;
-                return;
-            }
-
-            int pid = InputHandler.getChoice("Enter Passenger ID to drop: ", 1, passengerIdCounter);
-
-            Passenger target = null;
-            for (Passenger p : passengerList) {
-                if (p.id == pid) {
-                    target = p;
-                    break;
-                }
-            }
-
-            if (target == null) {
-                System.out.println("❌ Passenger not found!");
-                continue;
-            }
-
-            // ================================
-            //  EARLY DROP CHECK (BLOCK) if(early ang drop)
-            // ================================
-            if (target.dropStop > currentStop) {
-                System.out.println("\n❌ You cannot drop this passenger.");
-                System.out.println("➡ Their stop (" + target.dropStop + ") is ahead of this stop (" + currentStop + ").\n");
-                continue;
-            }
-
-            int confirm = InputHandler.getChoice("Drop Passenger " + pid + "? (1 Yes | 2 No): ", 1, 2);
-            if (confirm != 1) continue;
-
-            // ============================
-            //  FARE SYSTEM
-            // ============================
-            if (target.dropStop == currentStop) {
-                // Correct stop → full fare
-                System.out.println("✔ Correct stop! Added full fare: ₱" + target.fare);
-                money += target.fare;
-
-            } else if (currentStop > target.dropStop) {
-
-                // Calculate how many stops the passenger missed
-                int missedStops = currentStop - target.dropStop;
-
-                // Reduce fare based on missed stops (₱15 per stop)
-                int totalReduction = missedStops * 15;
-                int reducedFare = target.fare - totalReduction;
-
-                if (reducedFare < 0)
-                    reducedFare = 0;
-
-                System.out.println("❌ Missed stop(s)! each missed stop will reduced the fare by -₱15");
-                System.out.println("➡ Passenger missed " + missedStops + " stop(s).");
-                System.out.println("➡ Fare reduced by ₱" + totalReduction + ".");
-
-                System.out.println("💰 Added to money: ₱" + reducedFare);
-
-                money += reducedFare;
-            }
-
-            passengerList.remove(target);
-            passengers--;
-
-            System.out.println("Passenger " + pid + " dropped.");
-            System.out.println("💰 Money now: ₱" + money);
-        }
-    }
-
-
-
-
-
-//------------------------------------------------------//
-
-
-
     private Random rand = new Random();
-    private boolean bossPassive = false; // when false, boss won't attack(for if the player chooses to retry but canceled)
+    private boolean bossPassive = false;
     Bossing boss = new BossVaughn();
 
 
+    private  PassengerList passengerList;
+    public int money;
+    public int passengers;
+    private Driver driver;
+
+// In your initialization code:
+
+
     public Map1() {
-        super(30, 10);  // gaba=30%, stops=10
+        super(30, 10);
     }
 
-    @Override
     public boolean play(Driver driver) {
+        passengerList = new PassengerList(driver, this);
         boolean missionComplete = false;
-
-        //Destinations
-        String[] destination = {
+        String[] destination = new String[]{
                 "Naga City Jeepney Terminal",
-                "Inoburan Stop ",
+                "KEPCO", "Inoburan Stop ",
                 "Tinaan Crossing",
                 "Langtad Stop",
                 "Cantao-an Junction",
                 "Tunghaan Stop (Boundary Area)",
-                "Calajo-an Stop","Tulic Stop",
+                "Calajo-an Stop", "Tulic Stop",
                 "Minglanilla Public Market / Town Proper"
         };
-        int actionUsed = 0;
+
+
         while (!missionComplete) {
-            driver.baseFuel = 150; // base fuel incase if the player failed
+
+            driver.baseFuel = 150;
             passengers = 0;
-            money = 0; // change to zero after testing
+            money = 0;
+
             boolean failedRun = false;
+
             System.out.println("\n🚏 Starting Map 1: Naga to Minglanilla (" + stops + " stops)");
-            System.out.println("Mission: Earn ₱300 from 10 stops and Defeat Boss Vaughn.\n");
+            System.out.println("Mission: Earn ₱150 from 10 stops and defeat Boss Vaughn.\n");
 
+            for (stop = 1; stop <= stops; stop++) {
 
-
-            // for the stops uncomment this later
-        for (stop = 1; stop < stops; stop++) {
                 System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                System.out.println("\n=== Map 1: Naga to Minglanilla ===");
-                System.out.println("\nStop "+ (stop)+" | Destination: "+ destination[stop - 1] );
+                System.out.println("=== Map 1: Naga to Minglanilla ===");
+                System.out.println("Stop " + stop + " | Destination: " + destination[stop - 1]);
                 System.out.println("------------------------");
-                System.out.println("Fuel: " + driver.baseFuel + " | Passengers: " + passengers + " | Money: ₱" + money);
+                System.out.println("Fuel: " + driver.baseFuel + " | Passengers: " + passengerList.getPassengerCount() + " | Money: ₱" + money);
+                //NEW DISPLAY==========
+                passengerList.displayPassengerIndicator();
                 System.out.println("1. Pick up passengers");
-                System.out.println("2. Skip stop (save fuel)");
+                System.out.println("2. Skip stop");
                 System.out.println("3. View passenger list");
-                System.out.println("------------------------");
                 System.out.println("0. Back to Main Menu");
 
+                int action = InputHandler.getChoice("Your choice: ", 0, 3);
 
-                int action = InputHandler.getChoice("Your choice: ", 1, 3);
-            //Added back to MENU
-            if (action == 0) {
-                int choice = InputHandler.getChoice("Do you want to go back to Main Menu? (1 - Yes, 2 - No): ", 1, 2);
-                if (choice == 1) {
-                    System.out.println("\n🔙 Returning to Main Menu...");
-                    Main.main(null);
-                    return false;
-                } else {
-                    stop -= 1;
+                // ================ RETURN TO MENU ================
+                if (action == 0) {
+                    if (InputHandler.getChoice("Back to main menu? (1-Yes, 2-No): ", 1, 2) == 1) {
+                        Main.main(null);
+                        return false;
+                    }
+                    stop--;
                     continue;
                 }
-            }else if (action == 1) {
+                // ================ ACTION: PICKUP PASSENGERS ================
+                if (action == 1) {
+                    if (passengerList.isFull()) {
+                        System.out.println("\n⚠ Jeepney full (13/13). Drop passengers first!");
+                        stop--;
+                        continue;
+                    }
 
-                // ============================
-                //  BLOCK PICKUP IF FULL
-                // ============================
-                if (passengerList.size() >= 13) {
-                    System.out.println("\n⚠ Cannot pick up passengers.");
-                    System.out.println("🚌 Your jeepney is FULL (13 / 13).");
-                    System.out.println("➡ Drop some passengers first!");
-                    stop -=1;
-                    continue; // No fuel loss
-                }
+                    Random rand = new Random();
+                    int fuelLoss = rand.nextInt(3) + 8;
+                    driver.baseFuel -= fuelLoss;
 
-                Random rand = new Random();
-
-                // ============================
-                //  FUEL REDUCTION FIRST
-                // ============================
-                int fuelLoss = rand.nextInt(3) + 8; // 8–10 fuel
-                driver.baseFuel -= fuelLoss;
-
-                if (driver.baseFuel <= 0) {
-                    driver.baseFuel = 0;
-                    System.out.println("❌ You ran out of fuel! Game Over.");
-                    failedRun = true;
-                    break;
-                }
-
-                // ============================
-                //  RANDOM PASSENGERS (0–3)
-                // ============================
-                int countChance = rand.nextInt(4);
-
-                if (countChance == 0) {
-                    System.out.println("\nNo passengers at this stop.");
-                    System.out.println("🔋 Fuel Used: " + fuelLoss + " | Remaining Fuel: " + driver.baseFuel);
-                    actionUsed = 1;
-                    continue;
-                }
-
-                System.out.println("\n🚖 Passenger Pickup");
-                System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                System.out.println("🧍 Picked Up: " + countChance + " passenger(s)");
-                System.out.println("🔋 Fuel Used: " + fuelLoss + " | Remaining Fuel: " + driver.baseFuel);
-                System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-                // ============================
-                //  ADD PASSENGERS
-                // ============================
-                for (int i = 0; i < countChance; i++) {
-
-                    if (passengerList.size() >= 13) {
-                        System.out.println("⚠ Passenger limit reached (13). Cannot add more.");
+                    if (driver.baseFuel <= 0) {
+                        System.out.println("❌ You ran out of fuel! Game Over.");
+                        failedRun = true;
                         break;
                     }
 
-                    String type;
-                    int fare;
-                    int t = rand.nextInt(3);
+                    // Generate new passengers for pickup
+                    List<PassengerList.Passenger> newPassengers = passengerList.generatePassengersForPickup(stop, stops, rand);
 
-                    if (t == 0) { type = "Student"; fare = 40 + rand.nextInt(31); }
-                    else if (t == 1) { type = "Senior"; fare = 60 + rand.nextInt(31); }
-                    else { type = "Worker"; fare = 100 + rand.nextInt(41); }
+                    if (newPassengers.isEmpty()) {
+                        System.out.println("\nNo passengers at this stop.");
+                        System.out.println("Fuel Used: " + fuelLoss + " | Remaining Fuel: " + driver.baseFuel);
 
-                    // Generate drop-off stop
-                    int dropStop = stop + 1 + rand.nextInt(stops - stop);
-
-                    // ============================
-                    //  NEW RULE: CANNOT ADD IF dropStop == currentStop
-                    // ============================
-                    if (dropStop == stop) {
-                        System.out.println("❌ Cannot add passenger " + passengerIdCounter +
-                                ". Their drop stop (" + dropStop + ") is the current stop.");
-                        System.out.println("➡ Skipping this passenger.\n");
                         continue;
                     }
 
-                    passengerList.add(new Passenger(passengerIdCounter, type, dropStop, fare));
+                    System.out.println("\n🚖 Passenger Pickup");
+                    System.out.println("------------------------");
+                    System.out.println("Picked Up: " + newPassengers.size() + " passenger(s)");
+                    System.out.println("Fuel Used: " + fuelLoss + " | Remaining: " + driver.baseFuel);
 
-                    System.out.println("Passenger " + passengerIdCounter +
-                            " (" + type + ") | Drop at Stop: " + dropStop +
-                            " | Fare: ₱" + fare);
+                    // Add each generated passenger to the passenger list
+                    for (PassengerList.Passenger passenger : newPassengers) {
+                        passengerList.addPassenger(passenger);
+                        System.out.println(
+                                "Passenger " + passenger.id +
+                                        " (" + passenger.type + ") | Drop: Stop " + passenger.dropStop +
+                                        " | Fare: ₱" + passenger.fare
+                        );
+                        passengers++; // Increment your passenger count
+                    }
 
-                    passengerIdCounter++;
-                    passengers++;
+                    System.out.println("🚘 Passengers Onboard: " + passengerList.getPassengerCount());
+
                 }
 
-                System.out.println("🚘 Passengers Onboard: " + passengerList.size());
-                actionUsed = 1;
-            }
+                // ================ ACTION: SKIP STOP ================
+                else if (action == 2) {
+                    int fuelLoss = rand.nextInt(2) + 5;
+                    driver.baseFuel -= fuelLoss;
+                    System.out.println("You skipped this stop (Fuel -" + fuelLoss + ")");
+
+                }
 
 
+                // ================ ACTION: VIEW PASSENGERS ================
+                else if (action == 3) {
+                    if (!passengerList.showPassengerList(stop)) {
+                        stop--;
+                    }
 
-            else if (action == 2) {
-                int fuelLoss = rand.nextInt(2) + 5;
-                driver.baseFuel -= fuelLoss;
-                System.out.println("You skipped this stop (Fuel -" + fuelLoss + ").");
+                    continue;
+                }
 
-                actionUsed = 2; // mark for GABA
-            }
-
-            else if (action == 3) {
-                showPassengerList(stop);
-                actionUsed = 3; // No GABA after this
-                continue;       // jump to next loop immediately
-            }
-
-
-            //===========GABA SYSTEM===========
+                // ================ RANDOM EVENTS ("GABA") ================
                 if (rand.nextInt(100) < gaba) {
+
                     if (money <= 0) {
-                        System.out.println("\n💸 You have no money. The gaba event was skipped!");
+                        System.out.println("\n💰 No money → Gaba skipped.");
                         continue;
                     }
+
                     int randomGaba = rand.nextInt(5) + 1;
+
                     System.out.println("\n===============================");
-                    System.out.println(" ⚠️  A RANDOM EVENT OCCURRED! ");
+                    System.out.println(" ⚠ RANDOM EVENT OCCURRED! ");
                     System.out.println("===============================");
-                    System.out.println(" → Event: " + randomGaba + "\n");
+                    System.out.println("Event: " + randomGaba);
 
                     switch (randomGaba) {
-                        case 1 -> {
-                            System.out.println("🚗 Flat Tire! -5 Fuel, pay ₱15 to fix.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
-                            if (choice == 1) money -= 15;
+                        case 1: // Flat Tire
+                            System.out.println("🚗 Flat Tire! -5 Fuel or Pay ₱15");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 15;
                             else driver.baseFuel -= 5;
-                        }
-                        case 2 -> {
-                            System.out.println("🔥 Engine Overheated! -10 Fuel, pay ₱10 to cool.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
-                            if (choice == 1) money -= 10;
+                            break;
+
+                        case 2: // Overheat
+                            System.out.println("🔥 Engine Overheat! -10 Fuel or Pay ₱10");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 10;
                             else driver.baseFuel -= 10;
-                        }
-                        case 3 -> {
-                            System.out.println("🚨 LTO Stop! Pay ₱20 fine or lose 3 fuel and 1 passenger.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
-                            if (choice == 1) money -= 20;
+                            break;
+
+                        case 3: // LTO
+                            System.out.println("🚨 LTO Stop! Pay ₱20 or lose 3 fuel + 1 passenger.");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 20;
                             else {
                                 driver.baseFuel -= 3;
-                                passengers = Math.max(0, passengers - 1);
+                                //NEW LINE OF CODES==========
+                                // Use PassengerList instead of simple counter
+                                if (passengerList.getPassengerCount() > 0) {
+                                    passengerList.removeRandomPassenger();
+                                } else {
+                                    System.out.println("No passengers to remove!");
+                                }
                             }
-                        }
-                        case 4 -> {
-                            System.out.println("⛽ Fuel Leak! -4 Fuel, pay ₱12 to repair.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
-                            if (choice == 1) money -= 12;
+                            break;
+
+                        case 4: // Fuel leak
+                            System.out.println("⛽ Fuel Leak! -4 Fuel or Pay ₱12");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 12;
                             else driver.baseFuel -= 4;
-                        }
-                        case 5 -> {
-                            int stolen = 1;
-                            System.out.println("🚐 Jeepney Thief! Lost " + stolen + " passenger. Pay ₱18 bribe to recover.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore: ", 1, 2);
-                            if (choice == 1) money -= 18;
+                            break;
+
+                        case 5: // Thief
+                            System.out.println("🚐 Thief! 1 passenger stolen. Pay ₱18 to stop him.");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 18;
                             else {
-                                passengers = Math.max(0, passengers - stolen);
+                                //NEW LINE OF CODES==========
+                                // Use PassengerList instead of simple counter
+                                if (passengerList.getPassengerCount() > 0) {
+                                    passengerList.removeRandomPassenger();
+                                } else {
+                                    System.out.println("No passengers to remove!");
+                                }
                                 driver.baseFuel -= rand.nextInt(2) + 1;
                             }
-                        }
+                            break;
                     }
 
-
-                    System.out.println("\n📊 Status Update: Passengers: " + passengers + ", Fuel: " + driver.baseFuel + ", Money: ₱" + money);
+                    System.out.println("\n📊 Status Update: Passengers: " + passengers +
+                            " | Fuel: " + driver.baseFuel +
+                            " | Money: ₱" + money);
                 }
-
 
                 if (driver.baseFuel <= 0) {
                     System.out.println("❌ You ran out of fuel!");
@@ -368,21 +227,20 @@ public class Map1 extends World {
                 }
             }
 
-
+            // ======================================================================
+            // END OF MAP — CHECK FAIL / SUCCESS
+            // ======================================================================
 
             if (failedRun) {
                 if (retryPrompt(driver, boss)) continue;
-                else break;
+                break;
             }
 
-            //checks if money is over the mission, if not it will require to restant the map
-            if(money < 300){
-                System.out.println("💸 You don’t have enough money to complete this mission.");
-                System.out.println("🔁 We recommend restarting the map to try again.");
-                int play = 0;
-                while (play != 1) {
-                    play = InputHandler.getInt("Press 1 to Continue: ");
-                }
+            if (money < 150) {
+                System.out.println("💰 Not enough money to complete mission.");
+
+                for (int play = 0; play != 1; play = InputHandler.getInt("Press 1 to Continue: ")) {}
+                retryPrompt(driver, boss);
                 return play(driver);
             }
 
@@ -452,7 +310,7 @@ public class Map1 extends World {
                         }
 
                         // ✅ Deduct money and add item
-                        money -= 30;
+                        money -= 5;
                         driver.buyItem(selectedItem);
                         System.out.println("\n✅ You bought 1x " + selectedItem + "! (" + driver.inventory.get(selectedItem) + "x total)");
                     }
@@ -742,9 +600,9 @@ public class Map1 extends World {
 
                 if (boss.fuel <= 0) {
                     System.out.println("\n✅ Boss defeated!");
-                    driver.levelUp(2);
+
                     defeatBoss = true;
-                    if (money >= 300) {
+                    if (money >= 100) {
                         System.out.println("🎉 Mission Complete!");
                         System.out.println("Passengers: " + passengers + " | Total ₱" + money);
                         System.out.println("🎉 You successfully protected the passengers! Everyone is safe, thanks to your heroic driving!");
@@ -758,66 +616,12 @@ public class Map1 extends World {
 
         }
 
+
         return false;
     }
-
-
-
-    private boolean useItem(Driver driver, Bossing boss, int fuel, int shieldActive) {
-        HashMap<String, Integer> inv = driver.getInventory(); // ✅ Get directly from driver
-
-        if (inv.isEmpty()) {
-            System.out.println("\n❌ You have no items to use!");
-            return false;
-        }
-
-        System.out.println("\n🎒 Available Items:");
-        int optionNum = 1;
-        HashMap<Integer, String> menuMap = new HashMap<>();
-
-        for (Map.Entry<String, Integer> e : inv.entrySet()) {
-            System.out.println(optionNum + ". " + e.getKey() + " (x" + e.getValue() + ")");
-            menuMap.put(optionNum, e.getKey());
-            optionNum++;
-        }
-
-        System.out.println(optionNum + ". Cancel");
-        menuMap.put(optionNum, "Cancel");
-
-        int itemChoice = InputHandler.getChoice("Use which item? ", 1, optionNum);
-        String chosenItem = menuMap.get(itemChoice);
-
-        if (chosenItem.equals("Cancel")) {
-            System.out.println("❌ Cancelled item use.");
-            return false;
-        }
-
-        switch (chosenItem) {
-            case "RePhil" -> {
-                fuel += 30;
-                driver.decreaseItem("RePhil");
-                System.out.println("⛽ RePhil used! +30 fuel (" + fuel + ")");
-            }
-            case "Burning Tire" -> {
-                boss.fuel -= 20;
-                driver.decreaseItem("Burning Tire");
-                System.out.println("🔥 Burning Tire used! -20 Boss fuel");
-            }
-            case "Bumper Shield" -> {
-                shieldActive = 20;
-                driver.decreaseItem("Bumper Shield");
-                System.out.println("🛡️ Shield activated! Blocks 20 next damage");
-            }
-        }
-
-        return true;
-    }
-
-    //Made change for the retryPrompt for easy call(to avoid spaghetti code ) for easy restart map
     private boolean retryPrompt(Driver driver, Bossing boss) {
-        int choice = InputHandler.getChoice("\n🔁 Try again Map 1? (1 = Yes, 2 = No): ", 1, 2);
-        boolean retry = (choice == 1);
-
+        int retryChoice = InputHandler.getChoice("\n🔁 Try again Map 1? (1 = Yes, 2 = No): ", 1, 2);
+        boolean retry = retryChoice == 1;
         if (retry) {
             resetMap(driver, boss);
             System.out.println("\n🔁 Restarting Map 1 from Stop 1...");
@@ -828,7 +632,7 @@ public class Map1 extends World {
 
         return retry;
     }
-    //For resetting all stats
+
     private void resetMap(Driver driver, Bossing boss) {
         bossPassive = false;
         driver.baseFuel = 150;
