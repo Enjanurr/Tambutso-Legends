@@ -24,8 +24,10 @@ public class Map1 extends World {
     Bossing boss = new BossVaughn();
 
     public void showPassengerList(int currentStop) {
+
         while(!this.passengerList.isEmpty()) {
             this.passengerList.sort(Comparator.comparingInt((px) -> px.dropStop));
+
             System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             System.out.println("     PASSENGER LIST (STOP " + currentStop + ")   ");
             System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -44,6 +46,8 @@ public class Map1 extends World {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Your choice: ");
             String input = scanner.nextLine().trim();
+
+
             if (!input.matches("[01]")) {
                 System.out.println("❌ Invalid input! Please enter only 0 or 1.");
             } else {
@@ -122,6 +126,7 @@ public class Map1 extends World {
         int actionUsed = 0;
 
         while(!missionComplete) {
+
             driver.baseFuel = 150;
             this.passengers = 0;
             this.money = 0;
@@ -140,7 +145,9 @@ public class Map1 extends World {
                 System.out.println("3. View passenger list");
                 System.out.println("------------------------");
                 System.out.println("0. Back to Main Menu");
+
                 int action = InputHandler.getChoice("Your choice: ", 1, 3);
+
                 if (action == 0) {
                     int choice = InputHandler.getChoice("Do you want to go back to Main Menu? (1 - Yes, 2 - No): ", 1, 2);
                     if (choice == 1) {
