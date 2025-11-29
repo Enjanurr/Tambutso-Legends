@@ -10,11 +10,11 @@ public class PassengerList {
     private List<Passenger> passengers;
     private int passengerIdCounter;
     private Driver driver;
-    private Map1 gameMap;
+    private World gameMap;
     private boolean[] passengerSlots;
     private Passenger[] slotAssignments; // NEW: Track which passenger is in each slot
 
-    public PassengerList(Driver driver, Map1 gameMap) {
+    public PassengerList(Driver driver,World gameMap) {
         this.passengers = new ArrayList<>();
         this.passengerIdCounter = 1;
         this.driver = driver;

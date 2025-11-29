@@ -17,6 +17,7 @@ public class Map1 extends World {
 
 
     private  PassengerList passengerList;
+    //private PassengerList passengerList = new PassengerList();
     public int money;
     public int passengers;
     private Driver driver;
@@ -26,6 +27,8 @@ public class Map1 extends World {
 
     public Map1() {
         super(30, 10);
+
+        passengerList = new PassengerList(driver,this); // <--- THIS MAP INSTANCE
     }
 
     public boolean play(Driver driver) {
@@ -52,9 +55,9 @@ public class Map1 extends World {
             boolean failedRun = false;
 
             System.out.println("\n🚏 Starting Map 1: Naga to Minglanilla (" + stops + " stops)");
-            System.out.println("Mission: Earn ₱150 from 10 stops and defeat Boss Vaughn.\n");
+            System.out.println("Mission: Earn ₱100 from 10 stops and defeat Boss Vaughn.\n");
 
-            for (stop = 1; stop <= stops; stop++) {
+           for (stop = 1; stop <= stops; stop++) {
 
                 System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 System.out.println("=== Map 1: Naga to Minglanilla ===");
@@ -236,7 +239,7 @@ public class Map1 extends World {
                 break;
             }
 
-            if (money < 150) {
+            if (money < 100) {
                 System.out.println("💰 Not enough money to complete mission.");
 
                 for (int play = 0; play != 1; play = InputHandler.getInt("Press 1 to Continue: ")) {}
@@ -273,15 +276,15 @@ public class Map1 extends World {
                     }
                     case 1 -> { // ===== BUY SECTION =====
                         System.out.println("\n🛒 WHAT DO YOU WANT TO BUY?");
-                        System.out.println("1. RePhil (+30 Fuel) - ₱30");
-                        System.out.println("2. Burning Tire (+20 dmg) - ₱30");
-                        System.out.println("3. Bumper Shield (Block 20 dmg) - ₱30");
+                        System.out.println("1. RePhil (+30 Fuel) - ₱10");
+                        System.out.println("2. Burning Tire (+20 dmg) - ₱10");
+                        System.out.println("3. Bumper Shield (Block 20 dmg) - ₱10");
                         System.out.println("4. Back");
                         int itemChoice = InputHandler.getChoice("Choose: ", 1, 4);
 
                         if (itemChoice == 4) continue;
 
-                        if (money < 30) {
+                        if (money < 10) {
                             System.out.println("\n💸 You don't have enough money to buy another item.");
                             continue;
                         }
@@ -310,7 +313,7 @@ public class Map1 extends World {
                         }
 
                         // ✅ Deduct money and add item
-                        money -= 5;
+                        money -= 10; // for the price tweak it here
                         driver.buyItem(selectedItem);
                         System.out.println("\n✅ You bought 1x " + selectedItem + "! (" + driver.inventory.get(selectedItem) + "x total)");
                     }
@@ -338,7 +341,7 @@ public class Map1 extends World {
                         int quantity = driver.inventory.get(itemToSell);
 
                         // Set resell price (e.g., half of original price)
-                        int resellPrice = 30;
+                        int resellPrice = 5;
 
                         // Update inventory and money
                         driver.inventory.put(itemToSell, quantity - 1);
@@ -600,16 +603,16 @@ public class Map1 extends World {
 
                 if (boss.fuel <= 0) {
                     System.out.println("\n✅ Boss defeated!");
+                    driver.levelUp(2);
 
                     defeatBoss = true;
-                    if (money >= 100) {
-                        System.out.println("🎉 Mission Complete!");
-                        System.out.println("Passengers: " + passengers + " | Total ₱" + money);
-                        System.out.println("🎉 You successfully protected the passengers! Everyone is safe, thanks to your heroic driving!");
-                        System.out.println("🎉 You unlocked 2nd skill");
-                        missionComplete = true;
-                        return true;
-                    } else System.out.println("⚠️ Mission Incomplete!");
+                    System.out.println("🎉 Mission Complete!");
+                    System.out.println("Passengers: " + passengerList.getPassengers() +
+                            " | Total ₱" + money);
+                    System.out.println("🎉 You successfully protected the passengers! Everyone is safe, thanks to your heroic driving!");
+                    System.out.println("🎉 You unlocked 2nd skill");
+                    missionComplete = true;
+                    return true;
 
                 }
             }
@@ -619,6 +622,7 @@ public class Map1 extends World {
 
         return false;
     }
+
     private boolean retryPrompt(Driver driver, Bossing boss) {
         int retryChoice = InputHandler.getChoice("\n🔁 Try again Map 1? (1 = Yes, 2 = No): ", 1, 2);
         boolean retry = retryChoice == 1;

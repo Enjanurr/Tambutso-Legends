@@ -5,7 +5,7 @@ public class JolliKhai extends Bossing{
     Random rand = new Random();
 
     public JolliKhai(){
-        super("Jolli Khai",450);
+        super("Jolli Khai",400);
     }
     public int attackSkill(){
         System.out.println(name + " Burger Bomb");
