@@ -1,286 +1,408 @@
 package Maps;
 
-import Characters.Driver;
-import Utils.Display;
-import Utils.InputHandler;
-import java.util.Random;
 import Boss.*;
-import Shop.RandomItems;
+import Characters.Driver;
+import Utils.InputHandler;
+import java.util.*;
+import main.Main;
 
 public class Map1 extends World {
+    Bossing boss = new BossVaughn();
+    public int money;
+    public  int passengers;
+    int stop = 0;
     private Random rand = new Random();
-    RandomItems item = new RandomItems();
+    private PassengerList passengerList;
+    private Driver driver;
+
 
     public Map1() {
-        super(30, 10); // gaba=30%, stops=10
+        super(30, 10);
+        passengerList = new PassengerList(driver, this);
     }
 
     @Override
     public boolean play(Driver driver) {
         boolean missionComplete = false;
-
+        String[] destination = new String[]{
+                "Naga City Jeepney Terminal",
+                "KEPCO", "Inoburan Stop ",
+                "Tinaan Crossing",
+                "Langtad Stop",
+                "Cantao-an Junction",
+                "Tunghaan Stop (Boundary Area)",
+                "Calajo-an Stop", "Tulic Stop",
+                "Minglanilla Public Market / Town Proper"
+        };
         while (!missionComplete) {
-            int fuel = 250;  // reset fuel each attempt
+            driver.baseFuel = 150;
             passengers = 0;
             money = 0;
+            boolean failedRun = false;
 
             System.out.println("\n🚏 Starting Map 1: Naga to Minglanilla (" + stops + " stops)");
-            System.out.println("Mission: Earn ₱300 from 10 stops and Defeat Boss Vaughn.\n");
-
-            boolean failedRun = false;
-            for (int stop = 1; stop < stops; stop++) {
-                System.out.println("\n--- Stop " + stop + " ---");
-                System.out.println("Fuel: " + fuel + " | Passengers: " + passengers + " | Money: ₱" + money);
-                System.out.println("Choose an action:");
+            System.out.println("Mission: Earn ₱70+ from 10 stops and defeat Boss Vaughn.\n");
+            for (stop = 1; stop <= stops; stop++) {
+                System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                System.out.println("=== Map 1: Naga to Minglanilla ===");
+                System.out.println("Stop " + stop + " | Destination: " + destination[stop - 1]);
+                System.out.println("------------------------");
+                System.out.println("Fuel: " + driver.baseFuel + " | Passengers: " + passengerList.getPassengerCount() + " | Money: ₱" + money);
+                //NEW DISPLAY==========
+                passengerList.displayPassengerIndicator();
                 System.out.println("1. Pick up passengers");
-                System.out.println("2. Skip stop (save fuel)");
+                System.out.println("2. Skip stop");
+                System.out.println("3. View passenger list");
+                System.out.println("0. Back to Main Menu");
 
-                int action = InputHandler.getChoice("Your choice: ", 1, 2);
+                int action = InputHandler.getChoice("Your choice: ", 0, 3);
 
-                if (action == 1) {
-                    int fuelLoss = rand.nextInt(3) + (8 - driver.fuelEfficiency); // less harsh
-                    fuel -= fuelLoss;
-                    System.out.println("Fuel decreased by " + fuelLoss + ". Remaining fuel: " + fuel);
-
-                    int newPassengers = rand.nextInt(2) + 1; // 1–2 passengers
-                    passengers += newPassengers;
-                    System.out.println("Picked up " + newPassengers + " passengers. Total: " + passengers);
-
-                    int fare = rand.nextInt(30) + 10; // ₱10–₱39
-                    money += fare;
-                    System.out.println("Earned ₱" + fare + " this stop. Total: ₱" + money);
-
-                } else {
-                    int fuelLoss = rand.nextInt(2) + (5 - driver.fuelEfficiency);
-                    fuel -= fuelLoss;
-                    System.out.println("Fuel decreased by " + fuelLoss + ". Remaining fuel: " + fuel);
-                    System.out.println("You skipped this stop.");
+                // ================ RETURN TO MENU ================
+                if (action == 0) {
+                    if (InputHandler.getChoice("Back to main menu? (1-Yes, 2-No): ", 1, 2) == 1) {
+                        Main.main(null);
+                        return false;
+                    }
+                    stop--;
+                    continue;
                 }
-
-                // Gaba random events
-                if (rand.nextInt(100) < gaba) {
-                    int randomGaba = rand.nextInt(5) + 1;
-                    System.out.println("\n⚠️ A random event occurred! (" + randomGaba + ")");
-
-                    switch (randomGaba) {
-                        case 1 -> {
-                            System.out.println("🚗 Flat Tire! -5 Fuel, pay ₱15 to fix.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
-                            if (choice == 1) money -= 15;
-                            else fuel -= 5;
-                        }
-                        case 2 -> {
-                            System.out.println("🔥 Engine Overheated! -10 Fuel, pay ₱10 to cool.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
-                            if (choice == 1) money -= 10;
-                            else fuel -= 10;
-                        }
-                        case 3 -> {
-                            System.out.println("🚨 LTO Stop! Pay ₱15 fine or lose 3 fuel and 1 passenger.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
-                            if (choice == 1) money -= 15;
-                            else {
-                                fuel -= 3;
-                                passengers = Math.max(0, passengers - 1);
-                            }
-                        }
-                        case 4 -> {
-                            System.out.println("⛽ Fuel Leak! -4 Fuel, pay ₱10 to repair.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
-                            if (choice == 1) money -= 10;
-                            else fuel -= 4;
-                        }
-                        case 5 -> {
-                            int stolen = 1;
-                            System.out.println("🚐 Jeepney Thief! Lost " + stolen + " passenger. Pay ₱10 bribe to recover.");
-                            int choice = InputHandler.getChoice("1 - pay, 2 - ignore:", 1, 2);
-                            if (choice == 1) money -= 10;
-                            else {
-                                passengers = Math.max(0, passengers - stolen);
-                                fuel -= rand.nextInt(2) + 1;
-                            }
-                        }
+                // ================ ACTION: PICKUP PASSENGERS ================
+                if (action == 1) {
+                    if (passengerList.isFull()) {
+                        System.out.println("\n⚠ Jeepney full (13/13). Drop passengers first!");
+                        stop--;
+                        continue;
                     }
 
-                    System.out.println("\n📊 Status Update: Passengers: " + passengers + ", Fuel: " + fuel + ", Money: ₱" + money);
+                    Random rand = new Random();
+                    int fuelLoss = rand.nextInt(3) + 8;
+                    driver.baseFuel -= fuelLoss;
+
+                    if (driver.baseFuel <= 0) {
+                        System.out.println("❌ You ran out of fuel! Game Over.");
+                        failedRun = true;
+                        break;
+                    }
+
+                    // Generate new passengers for pickup
+                    List<PassengerList.Passenger> newPassengers = passengerList.generatePassengersForPickup(stop, stops, rand);
+
+                    if (newPassengers.isEmpty()) {
+                        System.out.println("\nNo passengers at this stop.");
+                        System.out.println("Fuel Used: " + fuelLoss + " | Remaining Fuel: " + driver.baseFuel);
+
+                        continue;
+                    }
+                    System.out.println("\n🚖 Passenger Pickup");
+                    System.out.println("------------------------");
+                    System.out.println("Picked Up: " + newPassengers.size() + " passenger(s)");
+                    System.out.println("Fuel Used: " + fuelLoss + " | Remaining: " + driver.baseFuel);
+
+                    // Add each generated passenger to the passenger list
+                    for (PassengerList.Passenger passenger : newPassengers) {
+                        passengerList.addPassenger(passenger);
+                        System.out.println(
+                                "Passenger " + passenger.id +
+                                        " (" + passenger.type + ") | Drop: Stop " + passenger.dropStop +
+                                        " | Fare: ₱" + passenger.fare
+                        );
+                        passengers++;
+                    }
+
+                    System.out.println("🚘 Passengers Onboard: " + passengerList.getPassengerCount());
+
                 }
 
-                if (fuel <= 0) {
-                    System.out.println("❌ You ran out of fuel! Game Over.");
+                // ================ ACTION: SKIP STOP ================
+                else if (action == 2) {
+                    int fuelLoss = rand.nextInt(2) + 5;
+                    driver.baseFuel -= fuelLoss;
+                    System.out.println("You skipped this stop (Fuel -" + fuelLoss + ")");
+
+                }
+
+
+                // ================ ACTION: VIEW PASSENGERS ================
+                else if (action == 3) {
+                    if (!passengerList.showPassengerList(stop)) {
+                        stop--;
+                    }
+
+                    continue;
+                }
+
+                // ================ RANDOM EVENTS ("GABA") ================
+                if (rand.nextInt(100) < gaba) {
+
+                    if (money <= 0) {
+                        System.out.println("\n💰 No money → Gaba skipped.");
+                        continue;
+                    }
+
+                    int randomGaba = rand.nextInt(5) + 1;
+                    // ====================== GABA EVENT ======================
+                    System.out.println("\n===============================");
+                    System.out.println(" ⚠ RANDOM EVENT OCCURRED! ");
+                    System.out.println("===============================");
+                    System.out.println("Event: " + randomGaba);
+
+                    switch (randomGaba) {
+                        case 1: // Flat Tire
+                            System.out.println("🚗 Flat Tire! -5 Fuel or Pay ₱3");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 3;
+                            else driver.baseFuel -= 5;
+                            break;
+
+                        case 2: // Overheat
+                            System.out.println("🔥 Engine Overheat! -10 Fuel or Pay ₱5");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 5;
+                            else driver.baseFuel -= 10;
+                            break;
+
+                        case 3: // LTO
+                            System.out.println("🚨 LTO Stop! Pay ₱8 or lose 3 fuel + 1 passenger.");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 8;
+                            else {
+                                driver.baseFuel -= 3;
+                                //NEW LINE OF CODES==========
+                                // Use PassengerList instead of simple counter
+                                if (passengerList.getPassengerCount() > 0) {
+                                    passengerList.removeRandomPassenger();
+                                } else {
+                                    System.out.println("No passengers to remove!");
+                                }
+                            }
+                            break;
+
+                        case 4: // Fuel leak
+                            System.out.println("⛽ Fuel Leak! -4 Fuel or Pay ₱7");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 7;
+                            else driver.baseFuel -= 4;
+                            break;
+
+                        case 5: // Thief
+                            System.out.println("🚐 Thief! 1 passenger stolen. Pay ₱10 to stop him.");
+                            if (InputHandler.getChoice("1-pay, 2-ignore: ", 1, 2) == 1)
+                                money -= 10;
+                            else {
+                                //NEW LINE OF CODES==========
+                                // Use PassengerList instead of simple counter
+                                if (passengerList.getPassengerCount() > 0) {
+                                    passengerList.removeRandomPassenger();
+                                } else {
+                                    System.out.println("No passengers to remove!");
+                                }
+                                driver.baseFuel -= rand.nextInt(2) + 1;
+                            }
+                            break;
+                    }
+
+                    System.out.println("\n📊 Status Update: Passengers: " + passengers +
+                            " | Fuel: " + driver.baseFuel +
+                            " | Money: ₱" + money);
+                }
+
+                if (driver.baseFuel <= 0) {
+                    System.out.println("❌ You ran out of fuel!");
                     failedRun = true;
                     break;
                 }
             }
 
+            // ======================================================================
+            // END OF MAP — CHECK FAIL / SUCCESS
+            // ======================================================================
+
             if (failedRun) {
-                if (retryPrompt()) continue;
-                else break;
+                if (retryPrompt(driver, boss)) continue;
+                break;
             }
 
-            // Boss Fight
-            Bossing boss = new BossVaughn();
-            System.out.println("\n========== ⚔️ BOSS FIGHT START ==========");
-            System.out.println("🚍 " + boss.name + " (Boss Fuel: " + boss.fuel + ")");
-            System.out.println("🧑‍✈️ Driver: " + driver.name + " (Your Fuel: " + fuel + ")");
-            System.out.println("------------------------------------------");
-            System.out.println("💡 Only Skill 1 is unlocked in this map!");
+            if (money < 70) {
+                System.out.println("💰 Not enough money to complete mission.");
 
-            boolean defeatBoss = false;
+                for (int play = 0; play != 1; play = InputHandler.getInt("Press 1 to Continue: ")) {
+                }
+                retryPrompt(driver, boss);
+                return play(driver);
+            }
 
-            // individual cooldowns
-            int cooldownSkill1 = 0;
+            // ====================== SHOP ======================
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            System.out.println("\n🎁 SHOP TIME!");
+            boolean buying = true;
+            while (buying) {
+                System.out.println("\nYour money: ₱" + money);
+                System.out.println("Your Fuel: " + driver.baseFuel);
+                System.out.println("1. Buy Item");
+                System.out.println("2. Resell Item");
+                System.out.println("3. Exit Shop (Continue to Boss)");
+                System.out.println("------------------------");
+                System.out.println("0. Back to Main Menu");
 
+                int mainChoice = InputHandler.getChoice("Choose: ", 0, 3);
 
-            // Track active items
-            int shieldActive = 0;
-            int burnDamage = 0;
-
-            while (!defeatBoss) {
-
-
-                System.out.println("\n--- Player Turn ---");
-
-                // === Show available skills dynamically ===
-                // added skill name
-                System.out.println("1. Use Skill 1 (" + driver.getSkill1() + ")" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
-                System.out.println("2. Use Skill 2 (🔒 Locked)");
-                System.out.println("3. Use Skill 3 (🔒 Locked)");
-                System.out.println("4. Skip turn (recover 5 fuel)");
-
-                int choice = InputHandler.getChoice("Your action: ", 1, 4);
-
-                int damage = 0;
-                boolean skillUsed = false;
-                boolean validTurn = true; // ✅ flag to control boss turn
-
-                switch (choice) {
-                    case 1 -> {
-                        if (cooldownSkill1 > 0) {
-                            System.out.println("⚠️ Skill 1 is cooling down! Wait " + cooldownSkill1 + " more turn(s).");
-                            validTurn = false; // boss shouldn't act
+                switch (mainChoice) {
+                    case 0 -> {
+                        int choice = InputHandler.getChoice("Do you want to go back to Main Menu? (1 - Yes, 2 - No): ", 1, 2);
+                        if (choice == 1) {
+                            System.out.println("\n🔙 Returning to Main Menu...");
+                            main.Main.main(null);
+                            return false;
                         } else {
-                            damage = driver.skill1();
-                            skillUsed = true;
-                            cooldownSkill1 = 1; // 1 full turn cooldown
+                            continue;
                         }
                     }
-                    case 2 ,3-> {
-                        System.out.println("❌ That skill is locked for this map!");
-                        validTurn = false;
-                    }
-                    case 4 -> {
-                        fuel += 5;
-                        System.out.println(driver.name + " rests and recovers 5 fuel! (" + fuel + ")");
-                    }
-                }
-                // ❌ If invalid turn (skill cooling down or locked), skip boss attack & cooldown decrement
-                if (!validTurn) continue;
+                    case 1 -> {
+                        System.out.println("\n🛒 WHAT DO YOU WANT TO BUY?");
+                        System.out.println("1. RePhil (+40 Fuel) - ₱10");
+                        System.out.println("2. Burning Tire (+30 dmg) - ₱10");
+                        System.out.println("3. Bumper Shield (Block 30 dmg) - ₱10");
+                        System.out.println("4. Back");
+                        int itemChoice = InputHandler.getChoice("Choose: ", 1, 4);
 
-                if (rand.nextInt(100) < gaba) {
-                    System.out.println("\n🎁 An Item appeared! You can use it to help fight the boss.");
-                    System.out.println("1. RePhil (Refill Fuel), Cost: ₱30");
-                    System.out.println("2. Burning Tire (Extra Damage), Cost: ₱30");
-                    System.out.println("3. Bumper Shield (Block Damage), Cost: ₱30");
-                    System.out.println("4. Ignore");
+                        if (itemChoice == 4) continue;
 
-                    int itemChoice = InputHandler.getChoice("Your choice: ", 1, 4);
-                    switch (itemChoice) {
-                        case 1 -> {
-                            int fuelGain = item.rePhill();
-                            fuel += fuelGain;
-                            money -= 30;
-                            System.out.println("\n⛽ You refilled your tank and restored " + fuelGain + " fuel!");
-                            System.out.println("💰 Money left: ₱" + money + " | Current Fuel: " + fuel);
+                        if (money < 10) {
+                            System.out.println("\n💸 You don't have enough money to buy another item.");
+                            continue;
                         }
-                        case 2 -> {
-                            burnDamage = item.burningTire();
-                            money -= 30;
-                            System.out.println("\n🔥 Burning Tire ready! Deals " + burnDamage + " extra damage to the boss.");
-                            System.out.println("💰 Money left: ₱" + money);
-                            if (skillUsed) {
-                                damage += burnDamage;
-                                System.out.println("\n💥 Extra damage applied immediately! Total this turn: " + damage);
-                            }
+
+                        String selectedItem = switch (itemChoice) {
+                            case 1 -> "RePhil";
+                            case 2 -> "Burning Tire";
+                            case 3 -> "Bumper Shield";
+                            default -> "";
+                        };
+
+                        //===========Define item limits===========
+                        int itemLimit = switch (selectedItem) {
+                            case "RePhil" -> 3;
+                            case "Burning Tire" -> 5;
+                            case "Bumper Shield" -> 3;
+                            default -> 5; // fallback safety
+                        };
+
+                        int currentQty = driver.inventory.getOrDefault(selectedItem, 0);
+
+                        // ✅ Checks item limit
+                        if (currentQty >= itemLimit) {
+                            System.out.println("\n⚠️ You already have the maximum amount of " + selectedItem + " (" + itemLimit + "x)!");
+                            continue;
                         }
-                        case 3 -> {
-                            shieldActive = item.bumperShield();
-                            money -= 30;
-                            System.out.println("🛡️ Bumper Shield activated! Will block up to " + shieldActive + " damage this turn.");
-                            System.out.println("💰 Money left: ₱" + money);
+
+                        // ✅ Deduct money and add item
+                        money -= 10;
+                        driver.buyItem(selectedItem);
+                        System.out.println("\n✅ You bought 1x " + selectedItem + "! (" + driver.inventory.get(selectedItem) + "x total)");
+                    }
+
+                    case 2 -> { // ===== RESELL SECTION =====
+                        if (driver.inventory.isEmpty()) {
+                            System.out.println("\n❌ You have nothing to sell!");
+                            continue;
                         }
-                        case 4 -> System.out.println("You ignored the item.");
+
+                        System.out.println("\n💰 WHAT DO YOU WANT TO SELL?");
+                        int i = 1;
+                        List<String> items = new ArrayList<>(driver.inventory.keySet());
+                        for (String item : items) {
+                            System.out.println(i + ". " + item + " (x" + driver.inventory.get(item) + ")");
+                            i++;
+                        }
+                        System.out.println(i + ". Back");
+
+                        int sellChoice = InputHandler.getChoice("Choose: ", 1, i);
+                        if (sellChoice == i) continue;
+
+                        String itemToSell = items.get(sellChoice - 1);
+                        int quantity = driver.inventory.get(itemToSell);
+
+                        int resellPrice = 5;
+
+                        driver.inventory.put(itemToSell, quantity - 1);
+                        if (driver.inventory.get(itemToSell) <= 0) {
+                            driver.inventory.remove(itemToSell);
+                        }
+
+                        money += resellPrice;
+                        System.out.println("\n💵 You sold 1x " + itemToSell + " for ₱" + resellPrice + "!");
+                    }
+
+                    case 3 -> {
+                        System.out.println("👋 Leaving shop...");
+                        buying = false;
                     }
                 }
 
-                // --- Player attack phase ---
-                if (damage > 0) {
-                    boss.fuel -= damage;
-                    if (boss.fuel < 0) boss.fuel = 0;
-                    System.out.println("💥 You dealt " + damage + " damage! Boss fuel left: " + boss.fuel);
-                }
+                System.out.println("💰 Remaining Money: ₱" + money);
 
-
-                // --- Boss Turn ---
-                if (boss.fuel > 0) {
-                    System.out.println("\n--- Boss Turn ---");
-                    int bossDamage = (rand.nextInt(2) == 0) ? boss.attackSkill() : boss.ultimate();
-
-                    if (shieldActive > 0) {
-                        int blocked = Math.min(shieldActive, bossDamage);
-                        bossDamage -= blocked;
-                        shieldActive = 0;
-                        System.out.println("🛡️ Shield blocked " + blocked + " damage!");
+                System.out.println("\n🎒 Current Inventory:");
+                if (driver.inventory.isEmpty()) {
+                    System.out.println("❌ Your inventory is empty!");
+                } else {
+                    for (Map.Entry<String, Integer> entry : driver.inventory.entrySet()) {
+                        System.out.println("• " + entry.getKey() + " (x" + entry.getValue() + ")");
                     }
-
-                    fuel -= bossDamage;
-                    if (fuel < 0) fuel = 0;
-                    System.out.println("🔥 " + boss.name + " dealt " + bossDamage + " damage! Your fuel left: " + fuel);
-                }
-
-                if (cooldownSkill1 > 0) cooldownSkill1--;
-
-                if (fuel <= 0) {
-                    System.out.println("\n💀 You were defeated by " + boss.name + "! Game over...");
-                    if (retryPrompt()) {
-                        defeatBoss = true;
-                        continue;
-                    } else return false; // ✅ fixed invalid return
-                }
-
-                if (boss.fuel <= 0) {
-                    System.out.println("\n✅ You defeated " + boss.name + "!");
-                    money += 150;
-                    System.out.println("💎 Reward: ₱150 for victory! Total Money: ₱" + money);
-                    defeatBoss = true;
                 }
             }
 
+            // ====================== BOSS FIGHT ======================
 
 
+            BossFight bossFight = new BossFight(boss, driver, this);
+            int result = bossFight.start();
 
-            if (money >= 300) {
-                System.out.println("🎉 Mission Success! Get ready for the next route.");
-                // Mission check
-                System.out.println("\n--- Map 1 Complete! ---");
-                System.out.println("Passengers carried: " + passengers);
-                System.out.println("Total Money Earned: ₱" + money);
+            if (result == -1) {
+                // Restart the entire map
+                resetMap(driver, boss);
+                return play(driver); // Recursively call play to restart the map
+            }
+            // ====================== VICTORY CHECK ======================
+            if (result == 1) {
+                System.out.println("\n✅ Boss defeated!");
+                System.out.println("🎉 Mission Complete!");
+                System.out.println("Passengers: " + passengers + " | Total ₱" + money);
+                System.out.println("🎉 You successfully protected the passengers! Everyone is safe, thanks to your heroic driving!");
+                System.out.println("🎉 You unlocked 2nd skill");
                 missionComplete = true;
-                return true; // ✅ pass to next map
-
-            } else {
-                System.out.println("Mission: Earn ₱300 from 10 stops and Defeat Boss Vaughn.\n");
-                System.out.println("⚠️ Mission Incomplete. You can try the route again!");
-                // Mission check
-                System.out.println("\n--- Map 1 Incomplete! ---");
-                System.out.println("Passengers carried: " + passengers);
-                System.out.println("Total Money Earned: ₱" + money);
+                return true;
             }
         }
         return false;
     }
 
-    private boolean retryPrompt() {
-        int choice = InputHandler.getChoice("\n🔁 Try again Map 1? (1 = Yes, 2 = No): ", 1, 2);
-        return choice == 1;
+    public boolean retryPrompt(Driver driver, Bossing boss) {
+        int retryChoice = InputHandler.getChoice("\n🔁 Try again Map 1? (1 = Yes, 2 = No): ", 1, 2);
+        boolean retry = retryChoice == 1;
+        if (retry) {
+            resetMap(driver, boss);
+            System.out.println("\n🔁 Restarting Map 1 from Stop 1...");
+        } else {
+
+            System.out.println("\n🕊️ You chose not to retry — the fight continues");
+        }
+
+        return retry;
     }
+
+    // Make this method public so BossFight can call it if needed
+    public void resetMap(Driver driver, Bossing boss) {
+
+        driver.baseFuel = 150;
+        driver.inventory.clear();
+        boss.fuel = 200;
+        passengers = 0;
+        money = 0;
+        passengerList = new PassengerList(driver, this);
+    }
+
+
+
+
+
 }

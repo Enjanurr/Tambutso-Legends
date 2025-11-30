@@ -3,18 +3,18 @@ import  java.util.Random;
 public class BossAdrian  extends Bossing {
     Random rand = new Random();
     public BossAdrian(){
-        super("Adrian",200);
+        super("Adrian",300);
     }
 
     @Override
     public int attackSkill(){
         System.out.println(name + " use Engine Rush");
-        return rand.nextInt(16) + 5; // 15-20
+        return rand.nextInt(6) + 30; // 30-35;
     }
 
     @Override
     public int ultimate(){
         System.out.println(name + " use Nitro Rage");
-        return rand.nextInt(46)  + 5; // 45- 50
+        return rand.nextInt(6)  + 50; // 50- 55
     }
 }
