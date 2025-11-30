@@ -30,20 +30,17 @@ public class Main {
         //tuts.play(driver);
 
         driver.levelUp(1); Map1 map1 = new Map1(); boolean successMap1 = map1.play(driver);
-
         //boolean successMap1 = true; // debug purposes
         if (successMap1) {
-            driver.levelUp(2);
-             Map2 map2 = new Map2(); boolean successMap2 = map2.play(driver);
-
             System.out.println("\n🚦 Proceeding to Map 2...");
+            driver.levelUp(2);
+            Map2 map2 = new Map2(); boolean successMap2 = map2.play(driver);
             //boolean successMap2 = true;// debug purposes
 
             if (successMap2) {
+                System.out.println("\n🚦 Proceeding to Map 3...");
                 driver.levelUp(3);
                 Map3 map3 = new Map3();boolean successMap3 = map3.play(driver);
-
-                System.out.println("\n🚦 Proceeding to Map 3...");
                 //boolean successMap3 = true;// debug purposes
 
                 if (successMap3) {

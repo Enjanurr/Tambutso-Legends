@@ -6,7 +6,7 @@ public class BossVaughn extends Bossing {
     Random rand = new Random();
 
     public BossVaughn() {
-        super("Vaughn", 250); // lowered from 100 for balance
+        super("Vaughn", 200); // lowered from 100 for balance
     }
 
     // Skill 1: Bumper Slam

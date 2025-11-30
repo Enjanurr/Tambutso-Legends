@@ -15,8 +15,8 @@
        public int money = 0; //Money in map 3 to pass on Finale map
 
         //public int fuel = 100;      // starting fuel
-        public int passengerCount = 0;
-        public int maxPassengers = 20; // jeep capacity
+        //public int passengerCount = 0;
+        //public int maxPassengers = 20; // jeep capacity
 
         public Driver(String name, String uniqueSkill) {
             this.name = name;
@@ -27,11 +27,11 @@
             this.money = money;
         }
         public int getMoney(){return money;}
-
+        /*
         public void showPassengers() {
             System.out.println(name + " has " + passengerCount + " passengers on board.");
         }
-
+    */
 
         // Abstract skills
         public abstract void levelUp(int mapLevel);

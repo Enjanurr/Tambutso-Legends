@@ -10,18 +10,19 @@ public class PassengerList {
     private List<Passenger> passengers;
     private int passengerIdCounter;
     private Driver driver;
-    private Map1 gameMap;
+    private World gameMap; // Use World base class
     private boolean[] passengerSlots;
-    private Passenger[] slotAssignments; // NEW: Track which passenger is in each slot
+    private Passenger[] slotAssignments;
 
-    public PassengerList(Driver driver, Map1 gameMap) {
+    public PassengerList(Driver driver, World gameMap) {
         this.passengers = new ArrayList<>();
         this.passengerIdCounter = 1;
         this.driver = driver;
         this.gameMap = gameMap;
-        this.passengerSlots = new boolean[13]; // new variable 13 passenger slots
-        this.slotAssignments = new Passenger[13]; // new variable  Initialize slot assignments
+        this.passengerSlots = new boolean[13];
+        this.slotAssignments = new Passenger[13];
     }
+
     public static class Passenger {
         public int id;
         public String type;
@@ -97,7 +98,7 @@ public class PassengerList {
             slotAssignments[slotIndex] = null; // Clear the slot assignment
 
             System.out.println("✅ Passenger " + passengerId + " dropped from slot " + (slotIndex + 1) +
-                    ". Money now: ₱" + gameMap.money);
+                    ".");
         } else {
             System.out.println("❌ Passenger ID " + passengerId + " not found!");
         }
@@ -302,7 +303,17 @@ public class PassengerList {
         }
 
         // Add money to the Map1 instance
-        gameMap.money += earnedFare;
+        //gameMap.money += earnedFare;
+        if (gameMap instanceof Map1 map1) {
+            map1.money += earnedFare;
+        } else if (gameMap instanceof Map2 map2) {
+            map2.money += earnedFare;
+        } else if (gameMap instanceof Map3 map3) {
+            map3.money += earnedFare;
+        } else {
+            // Fallback - you might want to handle this differently
+            System.out.println("❌ Error: Could not add money to map!");
+        }
         return earnedFare;
     }
 
@@ -360,23 +371,4 @@ public class PassengerList {
     }
 
 
-    //WALA RANI INCASE======
-    /*
-    public void clearAllPassengerSlots() {
-        for (int i = 0; i < passengerSlots.length; i++) {
-            passengerSlots[i] = false;
-            slotAssignments[i] = null;
-        }
-        passengers.clear();
-    }
-
-    // Method to get current passenger slots (for external use)
-    public boolean[] getPassengerSlots() {
-        return passengerSlots.clone();
-    }
-    // Get the next passenger ID counter
-    public int getNextPassengerId() {
-        return passengerIdCounter;
-    }
-*/
 }

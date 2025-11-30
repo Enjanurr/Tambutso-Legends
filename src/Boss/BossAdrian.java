@@ -3,7 +3,7 @@ import  java.util.Random;
 public class BossAdrian  extends Bossing {
     Random rand = new Random();
     public BossAdrian(){
-        super("Adrian",350);
+        super("Adrian",300);
     }
     public int attackSkill(){
         System.out.println(name + " use Engine Rush");
