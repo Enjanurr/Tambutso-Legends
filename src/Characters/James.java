@@ -3,11 +3,16 @@ package Characters;
 import java.util.Random;
 //======================= WHOLE REVISION =======================
 public class James extends Driver {
+    // added skill fields
+    private final String skill1 = "Crazy Drift";
+    private final String skill2 = "Wild Overdrive";
+    private final String skill3 = "Final Gear";
+
     private final Random rand = new Random();
     private int mapLevel = 0;
 
     public James() {
-        super("James", "Wild Overtake");
+        super("James", "Risk-Taker");
     }
 
     // ✅ Update map level when progressing
@@ -22,6 +27,7 @@ public class James extends Driver {
     }
 
     // 🚗 Skill 1: Crazy Drift
+    @Override
     public int skill1() {
         int damage;
 
@@ -30,20 +36,21 @@ public class James extends Driver {
             case 2 -> damage = randomInRange(35, 45);
             case 3 -> damage = randomInRange(45, 55);
             default -> {
-                System.out.println(name + " hasn’t unlocked Crazy Drift yet!");
+                System.out.println(name + " hasn’t unlocked " + skill1 + " yet!");
                 return 0;
             }
         }
 
-        System.out.println(name + " used Crazy Drift! 🚗 (" + damage + " dmg)");
+        System.out.println(name + " used " + skill1 + "! 🚗 (" + damage + " dmg)");
 
         return damage;
     }
 
     // ⚡ Skill 2: Wild Overdrive
+    @Override
     public int skill2() {
         if (mapLevel < 2) {
-            System.out.println(name + " hasn’t unlocked Wild Overdrive yet!");
+            System.out.println(name + " hasn’t unlocked " + skill2 + " yet!");
             return 0;
         }
 
@@ -53,23 +60,30 @@ public class James extends Driver {
             default -> 0;
         };
 
-        System.out.println(name + " used Wild Overdrive! ⚡ (" + damage + " dmg)");
+        System.out.println(name + " used "+ skill2 + "! ⚡ (" + damage + " dmg)");
         return damage;
     }
 
     // 🏁 Skill 3: Final Gear
+    @Override
     public int skill3() {
         if (mapLevel < 3) {
-            System.out.println(name + " hasn’t unlocked Final Gear yet!");
+            System.out.println(name + " hasn’t unlocked " + skill3 + " yet!");
             return 0;
         }
 
         int damage = randomInRange(85, 95);
         //int damage = randomInRange(1000, 2000);
-        System.out.println(name + " used Final Gear! 🏁 (" + damage + " dmg)");
+        System.out.println(name + " used " + skill3 + "! 🏁 (" + damage + " dmg)");
         return damage;
     }
 
+    @Override
+    public String getSkill1() { return skill1; }
+    @Override
+    public String getSkill2() { return skill2; }
+    @Override
+    public String getSkill3() { return skill3; }
 
 
 // Inventory management

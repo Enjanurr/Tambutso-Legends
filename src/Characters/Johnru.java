@@ -4,6 +4,11 @@ import java.util.Random;
 
 //======================= WHOLE REVISION =======================
 public class Johnru extends Driver {
+    // added skill fields
+    private final String skill1 = "Smooth Maneuver";
+    private final String skill2 = "Fare Tactician";
+    private final String skill3 = "Perfect Route";
+
     private final Random rand = new Random();
     private int mapLevel = 0;
     private int baseHeal = 10;
@@ -24,6 +29,7 @@ public class Johnru extends Driver {
     }
 
     // 🚗 Skill 1: Smooth Maneuver
+    @Override
     public int skill1() {
         int damage = 0, heal = 0;
 
@@ -41,20 +47,21 @@ public class Johnru extends Driver {
                 heal = randomInRange(10, 20);
             }
             default -> {
-                System.out.println(name + " hasn’t unlocked this skill yet!");
+                System.out.println(name + " hasn’t unlocked " + skill1 +" yet!");
                 return 0;
             }
         }
 
         baseFuel += heal;
-        System.out.println(name + " used Smooth Maneuver! 🚗 (" + damage + " dmg, +" + heal + " heal)");
+        System.out.println(name + " used " + skill1 + "! 🚗 (" + damage + " dmg, +" + heal + " heal)");
         return damage;
     }
 
     // 💼 Skill 2: Fare Tactician
+    @Override
     public int skill2() {
         if (mapLevel < 2) {
-            System.out.println(name + " hasn’t unlocked Fare Tactician yet!");
+            System.out.println(name + " hasn’t unlocked " + skill2 + " yet!");
             return 0;
         }
 
@@ -64,22 +71,29 @@ public class Johnru extends Driver {
             default -> 0;
         };
 
-        System.out.println(name + " used Fare Tactician! 💼 (" + damage + " dmg)");
+        System.out.println(name + " used " + skill2 + "! 💼 (" + damage + " dmg)");
         return damage;
     }
 
     // 🗺️ Skill 3: Perfect Route
+    @Override
     public int skill3() {
         if (mapLevel < 3) {
-            System.out.println(name + " hasn’t unlocked Perfect Route yet!");
+            System.out.println(name + " hasn’t unlocked " + skill3 + " yet!");
             return 0;
         }
 
         int damage = randomInRange(65, 85);
-        System.out.println(name + " used Perfect Route! 🗺️ (" + damage + " dmg)");
+        System.out.println(name + " used " + skill3 + "! 🗺️ (" + damage + " dmg)");
         return damage;
     }
 
+    @Override
+    public String getSkill1() { return skill1; }
+    @Override
+    public String getSkill2() { return skill2; }
+    @Override
+    public String getSkill3() { return skill3; }
 // Inventory management
     public void buyItem(String item) {
         inventory.put(item, inventory.getOrDefault(item, 0) + 1);

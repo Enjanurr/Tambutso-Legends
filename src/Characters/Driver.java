@@ -41,6 +41,11 @@
         public abstract void buyItem(String item);
         public abstract void decreaseItem(String item);
 
+        // added abstract skill getter methods
+        public abstract String getSkill1();
+        public abstract String getSkill2();
+        public abstract String getSkill3();
+
         public HashMap<String, Integer> inventory = new HashMap<>();
         public HashMap<String, Integer> getInventory(){
             return inventory;

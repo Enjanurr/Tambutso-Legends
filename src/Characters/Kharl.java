@@ -4,6 +4,11 @@ import java.util.Random;
 
 //======================= WHOLE REVISION =======================
 public class Kharl extends Driver {
+    // added skill fields
+    private final String skill1 = "Turbo Start";
+    private final String skill2 = "Nitro Spin";
+    private final String skill3 = "Tambutso";
+
     private final Random rand = new Random();
     private int mapLevel = 0;
 
@@ -23,6 +28,7 @@ public class Kharl extends Driver {
     }
 
     // 🚗 Skill 1: Crazy Drift
+    @Override
     public int skill1() {
         int damage;
 
@@ -31,19 +37,20 @@ public class Kharl extends Driver {
             case 2 -> damage = randomInRange(25, 35);
             case 3 -> damage = randomInRange(30, 40);
             default -> {
-                System.out.println(name + " hasn’t unlocked Turbo Start yet!");
+                System.out.println(name + " hasn’t unlocked " + skill1 +" yet!");
                 return 0;
             }
         }
 
-        System.out.println(name + " used Turbo Start! ⚡ (" + damage + " dmg)");
+        System.out.println(name + " used " + skill1 +"! ⚡ (" + damage + " dmg)");
         return damage;
     }
 
     // 🔥 Skill 2: Wild Overdrive
+    @Override
     public int skill2() {
         if (mapLevel < 2) {
-            System.out.println(name + " hasn’t unlocked Nitro Spin yet!");
+            System.out.println(name + " hasn’t unlocked " + skill2 +" yet!");
             return 0;
         }
 
@@ -53,22 +60,29 @@ public class Kharl extends Driver {
             default -> 0;
         };
 
-        System.out.println(name + " used Nitro Spin! ⚡ (" + damage + " dmg)");
+        System.out.println(name + " used " + skill2 +"! ⚡ (" + damage + " dmg)");
         return damage;
     }
 
     // 🚀 Skill 3: Final Gear
+    @Override
     public int skill3() {
         if (mapLevel < 3) {
-            System.out.println(name + " hasn’t unlocked Tambutso Burst yet!");
+            System.out.println(name + " hasn’t unlocked " + skill3 +" yet!");
             return 0;
         }
 
         int damage = randomInRange(70, 90);
-        System.out.println(name + " used Tambutso Burst! 🚀 (" + damage + " dmg)");
+        System.out.println(name + " used " + skill3 +"! 🚀 (" + damage + " dmg)");
         return damage;
     }
 
+    @Override
+    public String getSkill1() { return skill1; }
+    @Override
+    public String getSkill2() { return skill2; }
+    @Override
+    public String getSkill3() { return skill3; }
 
 // Inventory management
     public void buyItem(String item) {

@@ -138,22 +138,22 @@ public class BossFight {
         System.out.println("Fuel: " + driver.baseFuel + " | Boss Fuel: " + boss.fuel);
 
         if (gameMap instanceof Map1) {
-            System.out.println("1. Use Skill 1" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
+            System.out.println("1. Use Skill 1 (" + driver.getSkill1() + ")" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
             System.out.println("2. Use Item");
             System.out.println("3. Skip Turn ( +(5-10) Fuel)");
             System.out.println("----------------------");
             System.out.println("0. Exit Fight (Restart Current Map)");
         } else if (gameMap instanceof Map2) {
-            System.out.println("1. Use Skill 1" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
-            System.out.println("2. Use Skill 2" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : ""));
+            System.out.println("1. Use Skill 1(" + driver.getSkill1() + ")" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
+            System.out.println("2. Use Skill 2("  + driver.getSkill2() + ")" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : ""));
             System.out.println("3. Use Item");
             System.out.println("4. Skip Turn ( +(5-10) Fuel)");
             System.out.println("----------------------");
             System.out.println("0. Exit Fight (Restart Current Map)");
         } else if ((gameMap instanceof Map3) ||(gameMap instanceof Finale)) {
-            System.out.println("1. Use Skill 1" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
-            System.out.println("2. Use Skill 2" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : ""));
-            System.out.println("3. Use Skill 3" + (cooldownSkill3 > 0 ? " (⏳ " + cooldownSkill3 + " turns left)" : ""));
+            System.out.println("1. Use Skill 1(" + driver.getSkill1() + ")" + (cooldownSkill1 > 0 ? " (⏳ " + cooldownSkill1 + " turn left)" : ""));
+            System.out.println("2. Use Skill 2(" + driver.getSkill2() + ")" + (cooldownSkill2 > 0 ? " (⏳ " + cooldownSkill2 + " turns left)" : ""));
+            System.out.println("3. Use Skill 3(" + driver.getSkill3() + ")" + (cooldownSkill3 > 0 ? " (⏳ " + cooldownSkill3 + " turns left)" : ""));
             System.out.println("4. Use Item");
             System.out.println("5. Skip Turn ( +(5-10) Fuel)");
             System.out.println("----------------------");
@@ -188,12 +188,8 @@ public class BossFight {
                     cooldownSkill1 = 1;
                 }
             }
-            case 2 -> {
-                validTurn = handleItemUsage();
-            }
-            case 3 -> {
-                handleSkipTurn();
-            }
+            case 2 -> validTurn = handleItemUsage();
+            case 3 -> handleSkipTurn();
         }
         return new ActionResult(validTurn, damage, shouldRestartMap);
     }
@@ -227,12 +223,8 @@ public class BossFight {
                     cooldownSkill2 = 2;
                 }
             }
-            case 3 -> {
-                validTurn = handleItemUsage();
-            }
-            case 4 -> {
-                handleSkipTurn();
-            }
+            case 3 -> validTurn = handleItemUsage();
+            case 4 -> handleSkipTurn();
         }
         return new ActionResult(validTurn, damage, shouldRestartMap);
     }
@@ -275,12 +267,8 @@ public class BossFight {
                     cooldownSkill3 = 3;
                 }
             }
-            case 4 -> {
-                validTurn = handleItemUsage();
-            }
-            case 5 -> {
-                handleSkipTurn();
-            }
+            case 4 -> validTurn = handleItemUsage();
+            case 5 -> handleSkipTurn();
         }
         return new ActionResult(validTurn, damage, shouldRestartMap);
     }

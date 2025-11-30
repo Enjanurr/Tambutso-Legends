@@ -5,10 +5,14 @@ public class BossAdrian  extends Bossing {
     public BossAdrian(){
         super("Adrian",300);
     }
+
+    @Override
     public int attackSkill(){
         System.out.println(name + " use Engine Rush");
         return rand.nextInt(6) + 30; // 30-35;
     }
+
+    @Override
     public int ultimate(){
         System.out.println(name + " use Nitro Rage");
         return rand.nextInt(6)  + 50; // 50- 55

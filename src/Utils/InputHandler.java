@@ -28,4 +28,13 @@ public class InputHandler {
         } while (choice < min || choice > max);
         return choice;
     }
+    // made for skipping story
+    public static char getChar(String prompt) {
+        System.out.print(prompt);
+        while (!scanner.hasNext()) {
+            System.out.print("❌ Invalid input.\n" + prompt);
+            scanner.next();
+        }
+        return scanner.next().charAt(0);
+    }
 }
