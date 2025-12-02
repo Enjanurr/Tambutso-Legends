@@ -4,6 +4,8 @@ import Characters.*;
 import Maps.*;
 import Utils.*;
 import Story.*;
+import AsciiArts.*;
+
 public class Main {
     public static void main(String[] args) {
         int play = 0;
@@ -18,6 +20,15 @@ public class Main {
         }
         if (skip == 'N') {
             Story.intro();
+        }
+
+        try {
+            AsciiArt.printTitleArt1();
+            System.out.println("\n");
+            AsciiArt.printTitleArt2();
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
         // cleaned up display
@@ -47,6 +58,13 @@ public class Main {
             System.out.println("\n💤 You didn’t finish Map 1. Try again next time!");
         } else {
             System.out.println("\n🚦 Proceeding to Map 2...");
+            try {
+                Thread.sleep(1000);
+                AsciiArt.printSunset();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             driver.levelUp(2);
             Map2 map2 = new Map2();
             boolean successMap2 = map2.play(driver);
@@ -56,8 +74,17 @@ public class Main {
                 System.out.println("\n💤 You didn’t finish Map 2. Try again next time!");
             } else {
                 System.out.println("\n🚦 Proceeding to Map 3...");
+                try {
+                    Thread.sleep(1000);
+                    AsciiArt.printSunset();
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
                 driver.levelUp(3);
                 Map3 map3 = new Map3();
+                //1
                 boolean successMap3 = map3.play(driver);
                 //boolean successMap3 = true; // debug purposes
 
@@ -65,14 +92,19 @@ public class Main {
                     System.out.println("\n💀 You didn’t defeat the boss in Map 3. Try again!");
                 } else {
                     System.out.println("\n🏁 Proceeding to the Finale...");
+                    try {
+                        Thread.sleep(1000);
+                        AsciiArt.printFinaleEncounter();
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     Finale finale = new Finale();
                     finale.play(driver);
                     Story.outro();
+                    AsciiArt.printVictoryArt();
                 }
             }
         }
-
-
-
     }
 }
