@@ -1,8 +1,9 @@
 package Maps;
 
+import AsciiArts.*;
 import Boss.*;
 import Characters.Driver;
-import Utils.InputHandler;
+import Utils.*;
 import java.util.*;
 import main.Main;
 
@@ -13,10 +14,7 @@ public class Map2 extends World {
     int stop = 0;
     private Random rand = new Random();
     private boolean bossPassive = false;
-
-
-
-    private  PassengerList passengerList;
+    private PassengerList passengerList;
     private Driver driver;
 
     public Map2() {
@@ -52,6 +50,14 @@ public class Map2 extends World {
             passengers = 0;
             money = 0;
             boolean failedRun = false;
+
+            try {
+                AsciiArt.printSunrise();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             System.out.println("\n🚏 Starting Map 2: Minglanilla → CIT-U (" + stops + " stops)");
             System.out.println("Mission: Earn ₱125+ from 15 stops and Defeat Boss Adrian.\n");
 
@@ -101,10 +107,16 @@ public class Map2 extends World {
                     // Generate new passengers for pickup
                     List<PassengerList.Passenger> newPassengers = passengerList.generatePassengersForPickup(stop, stops, rand);
 
+                    try {
+                        AsciiArt.printMap2Jeepney();
+                        Thread.sleep(800);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     if (newPassengers.isEmpty()) {
                         System.out.println("\nNo passengers at this stop.");
                         System.out.println("Fuel Used: " + fuelLoss + " | Remaining Fuel: " + driver.baseFuel);
-
                         continue;
                     }
 
@@ -134,6 +146,12 @@ public class Map2 extends World {
                     driver.baseFuel -= fuelLoss;
                     System.out.println("You skipped this stop (Fuel -" + fuelLoss + ")");
 
+                    try {
+                        AsciiArt.printMap2Jeepney();
+                        Thread.sleep(800);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
 
@@ -272,7 +290,7 @@ public class Map2 extends World {
                     case 1 -> {
                         System.out.println("\n🛒 WHAT DO YOU WANT TO BUY?");
                         System.out.println("1. RePhil (+40 Fuel) - ₱15");
-                        System.out.println("2. Burning Tire (+30 dmg) - ₱15");
+                        System.out.println("2. Burning Tire (Inflict -20 dmg) - ₱15");
                         System.out.println("3. Bumper Shield (Block 30 dmg) - ₱15");
                         System.out.println("4. Back");
                         int itemChoice = InputHandler.getChoice("Choose: ", 1, 4);
@@ -363,6 +381,16 @@ public class Map2 extends World {
                 }
             }
             // ====================== BOSS FIGHT ======================
+            try {
+                Thread.sleep(1000);
+                AsciiArt.printEncounter();
+                Thread.sleep(1000);
+                AsciiArt.printAdrianTitleArt();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             BossFight bossFight = new BossFight(boss, driver, this);
             int result = bossFight.start();
 

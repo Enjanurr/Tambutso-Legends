@@ -1,5 +1,6 @@
 package Maps;
 
+import AsciiArts.AsciiArt;
 import Boss.*;
 import Characters.Driver;
 import Utils.InputHandler;
@@ -24,7 +25,7 @@ public class Finale extends World {
             driver.baseFuel = 300;
             // ====================== SHOP ======================
             System.out.println("\n🚏 Finalleee");
-            System.out.println("Defeat JolliKhai\n");
+            System.out.println("Defeat ???\n");
 
             System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             System.out.println("\n🎁 SHOP TIME!");
@@ -144,6 +145,14 @@ public class Finale extends World {
                 }
             }
             // ====================== BOSS FIGHT ======================
+            try {
+                Thread.sleep(1000);
+                AsciiArt.printJolliKhaiTitleArt();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             BossFight bossFight = new BossFight(boss, driver, this);
             int result = bossFight.start();
 

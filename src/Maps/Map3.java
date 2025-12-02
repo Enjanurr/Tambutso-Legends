@@ -1,8 +1,9 @@
 package Maps;
 
+import AsciiArts.*;
 import Boss.*;
 import Characters.Driver;
-import Utils.InputHandler;
+import Utils.*;
 import java.util.*;
 import main.Main;
 
@@ -13,14 +14,10 @@ public class Map3 extends World {
     int stop = 0;
     private Random rand = new Random();
     private boolean bossPassive = false;
-
-
-
-    private  PassengerList passengerList;
+    private PassengerList passengerList;
     private Driver driver;
 
     public Map3() {
-
         super(70, 20); // gaba = 70%, stops = 20
         passengerList = new PassengerList(driver,this);
     }
@@ -56,11 +53,19 @@ public class Map3 extends World {
             driver.baseFuel = 300;
             passengers = 0;
             money = 0;
+            boolean failedRun = false;
+
+            AsciiArt.printSunrise();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             System.out.println("\n🚏 Starting Map 3: CIT-U → IT Park (" + stops + " stops)");
             System.out.println("Mission: Earn ₱150+ from 20 stops and Defeat Sir Khai.\n");
 
-            boolean failedRun = false;
+
 
             // === STOPS PHASE ===
             for (stop = 1; stop <= stops; stop++) {
@@ -109,6 +114,13 @@ public class Map3 extends World {
                     // Generate new passengers for pickup
                     List<PassengerList.Passenger> newPassengers = passengerList.generatePassengersForPickup(stop, stops, rand);
 
+                    try {
+                        AsciiArt.printMap3Jeepney();
+                        Thread.sleep(800);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     if (newPassengers.isEmpty()) {
                         System.out.println("\nNo passengers at this stop.");
                         System.out.println("Fuel Used: " + fuelLoss + " | Remaining Fuel: " + driver.baseFuel);
@@ -142,6 +154,12 @@ public class Map3 extends World {
                     driver.baseFuel -= fuelLoss;
                     System.out.println("You skipped this stop (Fuel -" + fuelLoss + ")");
 
+                    try {
+                        AsciiArt.printMap2Jeepney();
+                        Thread.sleep(800);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
 
@@ -370,6 +388,15 @@ public class Map3 extends World {
                 }
             }
             // ====================== BOSS FIGHT ======================
+            try {
+                Thread.sleep(1000);
+                AsciiArt.printEncounter();
+                Thread.sleep(1000);
+                AsciiArt.printSirKhaiTitleArt();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             BossFight bossFight = new BossFight(boss, driver, this);
             int result = bossFight.start();
